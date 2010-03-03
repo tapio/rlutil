@@ -134,7 +134,7 @@ RLUTIL_STRING_T getANSIColor(const int c) {
 		case 4 : return ANSI_RED; // non-ANSI
 		case 5 : return ANSI_MAGENTA;
 		case 6 : return ANSI_BROWN;
-		case 7 : return ANSI_GRAY;
+		case 7 : return ANSI_GREY;
 		case 8 : return ANSI_DARKGREY;
 		case 9 : return ANSI_LIGHTBLUE; // non-ANSI
 		case 10: return ANSI_LIGHTGREEN;
