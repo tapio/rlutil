@@ -34,6 +34,7 @@
 	/// Common C++ headers
 	#include <iostream>
 	#include <string>
+	#include <sstream>
 #endif // __cplusplus
 
 #ifdef WIN32
@@ -41,7 +42,7 @@
 	#include <conio.h>    // for getch() and kbhit()
 #else
 	#ifdef __cplusplus
-		#include <cstdio> // for getch()
+		#include <cstdio> // for getch() and fflush()
 	#else // __cplusplus
 		#include <stdio.h> // for getch()
 	#endif // __cplusplus
@@ -98,16 +99,17 @@ namespace rlutil {
  */
 
 #ifdef __cplusplus
-	#include <iostream>
-	#include <string>
 	#ifndef RLUTIL_STRING_T
 		typedef std::string RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
+
 	void inline RLUTIL_PRINT(RLUTIL_STRING_T st) { std::cout << st; }
+
 #else // __cplusplus
 	#ifndef RLUTIL_STRING_T
 		typedef char* RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
+
 	#define RLUTIL_PRINT(st) printf("%s", st)
 #endif // __cplusplus
 
@@ -205,6 +207,25 @@ void inline cls() {
 #else
 	RLUTIL_PRINT("\033[2J");
 #endif
+}
+
+/// Function: locate
+/// Sets the cursor position to x,y.
+void locate(int x, int y) {
+#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+	COORD coord = {x, y};
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+#else // WIN32 || USE_ANSI
+	#ifdef __cplusplus
+		std::ostringstream oss;
+		oss << "\033[" << y << ";" << x << "H";
+		RLUTIL_PRINT(oss.str());
+	#else // __cplusplus
+		char buf[32];
+		sprintf(buf, "\033[%d;%df", y, x);
+		RLUTIL_PRINT(buf);
+	#endif // __cplusplus
+#endif // WIN32 || USE_ANSI
 }
 
 /// Function: msleep
