@@ -56,9 +56,9 @@ int getch() {
 
 /// Function: kbhit
 /// Determines if keyboard has been hit. Dummy for Linux (in conio.h on Windows).
-bool kbhit() {
+int kbhit() {
 	//TODO: Dummy implementation
-	return true;
+	return !0;
 }
 #endif // WIN32
 
@@ -70,12 +70,9 @@ namespace rlutil {
 #endif
 
 /**
- * Defs: Internal typedefs and macros (available globally)
+ * Defs: Internal typedefs and macros
  * RLUTIL_STRING_T - String type depending which one of C or C++ is used
  * RLUTIL_PRINT(str) - Printing macro independent of C/C++
- * bool - Boolean type for C
- * false - false for C
- * true - true for C
  */
 
 #ifdef __cplusplus
@@ -84,13 +81,6 @@ namespace rlutil {
 	typedef std::string RLUTIL_STRING_T;
 	void inline RLUTIL_PRINT(RLUTIL_STRING_T st) { std::cout << st; }
 #else // __cplusplus
-	#ifndef bool
-		typedef int bool;
-	#endif // bool
-	#ifndef false
-		#define false 0
-		#define true (!false)
-	#endif // false
 	typedef char* RLUTIL_STRING_T;
 	#define RLUTIL_PRINT(st) printf("%s", st)
 #endif // __cplusplus
