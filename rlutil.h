@@ -2,8 +2,8 @@
  * Copyright (C) 2010 Tapio Vierros
  *
  * This file provides some useful utilities for console mode
- * roguelike game development with C++. It is aimed to be
- * cross-platform (at least Windows and Linux).
+ * roguelike game development with C and C++. It is aimed to
+ * be cross-platform (at least Windows and Linux).
  *
  * *** LICENSE ***
  *
@@ -25,16 +25,34 @@
 /// Define RLUTIL_USE_ANSI to use ANSI escape sequences also on Windows
 //#define RLUTIL_USE_ANSI
 
-#include <iostream>
-#include <string>
+#ifdef __cplusplus
+	#include <iostream>
+	#include <string>
+	typedef std::string RLUTIL_STRING_T;
+	#define RLUTIL_PRINT(st) std::cout << st
+#else // __cplusplus
+	#ifndef bool
+		typedef int bool;
+	#endif // bool
+	#ifndef false
+		#define false 0
+		#define true (!false)
+	#endif // false
+	typedef char* RLUTIL_STRING_T;
+	#define RLUTIL_PRINT(st) printf("%s", st)
+#endif // __cplusplus
 
 #ifdef WIN32
-#include <windows.h>  // for color()
-#include <conio.h>    // for getch() and kbhit()
+	#include <windows.h>  // for color()
+	#include <conio.h>    // for getch() and kbhit()
 #else
-#include <cstdio>     // for gethch()
-#include <termios.h>  // for gethch()
-#include <unistd.h>   // for gethch()
+	#ifdef __cplusplus
+		#include <cstdio> // for getch()
+	#else // __cplusplus
+		#include <stdio.h> // for getch()
+	#endif // __cplusplus
+	#include <termios.h>  // for getch()
+	#include <unistd.h>   // for getch()
 
 /// Get character without requiring pressing Enter
 /// Windows has this in conio.h
@@ -55,28 +73,28 @@ int getch() {
 bool kbhit() {
 	return true;
 }
-#endif
+#endif // WIN32
 
-const std::string ANSI_CLS("\033[2J");
-const std::string ANSI_BLACK("\033[22;30m");
-const std::string ANSI_RED("\033[22;31m");
-const std::string ANSI_GREEN("\033[22;32m");
-const std::string ANSI_BROWN("\033[22;33m");
-const std::string ANSI_BLUE("\033[22;34m");
-const std::string ANSI_MAGENTA("\033[22;35m");
-const std::string ANSI_CYAN("\033[22;36m");
-const std::string ANSI_GRAY("\033[22;37m");
-const std::string ANSI_DARKGREY("\033[01;30m");
-const std::string ANSI_LIGHTRED("\033[01;31m");
-const std::string ANSI_LIGHTGREEN("\033[01;32m");
-const std::string ANSI_YELLOW("\033[01;33m");
-const std::string ANSI_LIGHTBLUE("\033[01;34m");
-const std::string ANSI_LIGHTMAGENTA("\033[01;35m");
-const std::string ANSI_LIGHTCYAN("\033[01;36m");
-const std::string ANSI_WHITE("\033[01;37m");
+const RLUTIL_STRING_T ANSI_CLS = "\033[2J";
+const RLUTIL_STRING_T ANSI_BLACK = "\033[22;30m";
+const RLUTIL_STRING_T ANSI_RED = "\033[22;31m";
+const RLUTIL_STRING_T ANSI_GREEN = "\033[22;32m";
+const RLUTIL_STRING_T ANSI_BROWN = "\033[22;33m";
+const RLUTIL_STRING_T ANSI_BLUE = "\033[22;34m";
+const RLUTIL_STRING_T ANSI_MAGENTA = "\033[22;35m";
+const RLUTIL_STRING_T ANSI_CYAN = "\033[22;36m";
+const RLUTIL_STRING_T ANSI_GRAY = "\033[22;37m";
+const RLUTIL_STRING_T ANSI_DARKGREY = "\033[01;30m";
+const RLUTIL_STRING_T ANSI_LIGHTRED = "\033[01;31m";
+const RLUTIL_STRING_T ANSI_LIGHTGREEN = "\033[01;32m";
+const RLUTIL_STRING_T ANSI_YELLOW = "\033[01;33m";
+const RLUTIL_STRING_T ANSI_LIGHTBLUE = "\033[01;34m";
+const RLUTIL_STRING_T ANSI_LIGHTMAGENTA = "\033[01;35m";
+const RLUTIL_STRING_T ANSI_LIGHTCYAN = "\033[01;36m";
+const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
 
 /// Return ANSI color escape sequence for speficied number
-std::string getANSIColor(const int c) {
+RLUTIL_STRING_T getANSIColor(const int c) {
 	switch (c) {
 		case 0 : return ANSI_BLACK;
 		case 1 : return ANSI_BLUE; // non-ANSI
@@ -94,7 +112,7 @@ std::string getANSIColor(const int c) {
 		case 13: return ANSI_LIGHTMAGENTA;
 		case 14: return ANSI_YELLOW; // non-ANSI
 		case 15: return ANSI_WHITE;
-		default: return std::string("");
+		default: return "";
 	}
 }
 
@@ -104,7 +122,7 @@ void color(int c) {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, c);
 #else
-	std::cout << getANSIColor(c);
+	RLUTIL_PRINT(getANSIColor(c));
 #endif
 }
 
@@ -113,7 +131,7 @@ void cls() {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
 	system("cls");
 #else
-	std::cout << "\033[2J";
+	RLUTIL_PRINT("\033[2J");
 #endif
 }
 
