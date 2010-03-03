@@ -180,7 +180,7 @@ RLUTIL_STRING_T getANSIColor(const int c) {
 /// Change color specified by number (Windows / QBasic colors).
 ///
 /// See <Color Codes>
-void setColor(int c) {
+void inline setColor(int c) {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, c);
@@ -191,7 +191,7 @@ void setColor(int c) {
 
 /// Function: cls
 /// Clears screen.
-void cls() {
+void inline cls() {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
 	system("cls");
 #else
@@ -201,7 +201,7 @@ void cls() {
 
 /// Function: msleep
 /// Waits given number of milliseconds before continuing.
-void msleep(unsigned int ms) {
+void inline msleep(unsigned int ms) {
 #ifdef WIN32
 	Sleep(ms);
 #else
