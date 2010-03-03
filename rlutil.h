@@ -37,7 +37,7 @@
 #endif // __cplusplus
 
 #ifdef WIN32
-	#include <windows.h>  // for color()
+	#include <windows.h>  // for color() and Sleep()
 	#include <conio.h>    // for getch() and kbhit()
 #else
 	#ifdef __cplusplus
@@ -46,7 +46,7 @@
 		#include <stdio.h> // for getch()
 	#endif // __cplusplus
 	#include <termios.h>  // for getch()
-	#include <unistd.h>   // for getch()
+	#include <unistd.h>   // for getch() and (u)sleep()
 
 /// Function: getch
 /// Get character without requiring pressing Enter.
@@ -184,6 +184,24 @@ void cls() {
 #else
 	RLUTIL_PRINT("\033[2J");
 #endif
+}
+
+/// Function: msleep
+/// Waits given number of milliseconds before continuing.
+void msleep(unsigned int ms) {
+#ifdef WIN32
+	Sleep(ms);
+#else
+	// usleep argument must be under 1 000 000
+	if (ms > 1000) sleep(ms/1000000);
+	usleep((ms % 1000000) * 1000);
+#endif
+}
+
+/// Function: anykey
+/// Waits until a key is pressed.
+void inline anykey() {
+	getch();
 }
 
 #ifdef __cplusplus
