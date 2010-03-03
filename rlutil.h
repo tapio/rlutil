@@ -1,29 +1,34 @@
-/** rlutil.h
- * Copyright (C) 2010 Tapio Vierros
+/**
+ * File: rlutil.h
  *
+ * About: Description
  * This file provides some useful utilities for console mode
  * roguelike game development with C and C++. It is aimed to
  * be cross-platform (at least Windows and Linux).
  *
- * *** LICENSE ***
+ * About: Copyright
+ * (C) 2010 Tapio Vierros
  *
- *            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
- *                    Version 2, December 2004
- *
- * Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
- *
- * Everyone is permitted to copy and distribute verbatim or modified
- * copies of this license document, and changing it is allowed as long
- * as the name is changed.
+ * About: Licensing
+ * See <License>
+ */
 
- *            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
- *   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
- *
- *  0. You just DO WHAT THE FUCK YOU WANT TO.
-*/
 
-/// Define RLUTIL_USE_ANSI to use ANSI escape sequences also on Windows
-//#define RLUTIL_USE_ANSI
+/// Define: RLUTIL_USE_ANSI
+/// Define this to use ANSI escape sequences also on Windows
+/// (defaults to using WinAPI instead).
+#if 0
+#define RLUTIL_USE_ANSI
+#endif
+
+/**
+ * Defs: Internal typedefs and macros (available globally)
+ * RLUTIL_STRING_T - String type depending which one of C or C++ is used
+ * RLUTIL_PRINT(str) - Printing macro independent of C/C++
+ * bool - Boolean type for C
+ * false - false for C
+ * true - true for C
+ */
 
 #ifdef __cplusplus
 	#include <iostream>
@@ -54,7 +59,8 @@
 	#include <termios.h>  // for getch()
 	#include <unistd.h>   // for getch()
 
-/// Get character without requiring pressing Enter
+/// Function: getch
+/// Get character without requiring pressing Enter.
 /// Windows has this in conio.h
 int getch() {
 	struct termios oldt, newt;
@@ -68,13 +74,35 @@ int getch() {
 	return ch;
 }
 
-/// Somewhat useless function? (In conio.h on Windows)
-//TODO: If this always returns true, does it have side effects?
+/// Function: kbhit
+/// Determines if keyboard has been hit. Dummy for Linux (in conio.h on Windows).
 bool kbhit() {
+	//TODO: Dummy implementation
 	return true;
 }
 #endif // WIN32
 
+/**
+ * Consts: ANSI color strings
+ *
+ * ANSI_CLS - Clears screen
+ * ANSI_BLACK - Black
+ * ANSI_RED - Red
+ * ANSI_GREEN - Green
+ * ANSI_BROWN - Brown / dark yellow
+ * ANSI_BLUE - Blue
+ * ANSI_MAGENTA - Magenta / purple
+ * ANSI_CYAN - Cyan
+ * ANSI_GREY - Grey / dark white
+ * ANSI_DARKGREY - Dark Grey / light black
+ * ANSI_LIGHTRED - Light red
+ * ANSI_LIGHTGREEN - Light green
+ * ANSI_YELLOW - Yellow (bright)
+ * ANSI_LIGHTBLUE - Light blue
+ * ANSI_LIGHTMAGENTA - Light magenta / light purple
+ * ANSI_LIGHTCYAN - Light cyan
+ * ANSI_WHITE - White (bright)
+ **/
 const RLUTIL_STRING_T ANSI_CLS = "\033[2J";
 const RLUTIL_STRING_T ANSI_BLACK = "\033[22;30m";
 const RLUTIL_STRING_T ANSI_RED = "\033[22;31m";
@@ -83,7 +111,7 @@ const RLUTIL_STRING_T ANSI_BROWN = "\033[22;33m";
 const RLUTIL_STRING_T ANSI_BLUE = "\033[22;34m";
 const RLUTIL_STRING_T ANSI_MAGENTA = "\033[22;35m";
 const RLUTIL_STRING_T ANSI_CYAN = "\033[22;36m";
-const RLUTIL_STRING_T ANSI_GRAY = "\033[22;37m";
+const RLUTIL_STRING_T ANSI_GREY = "\033[22;37m";
 const RLUTIL_STRING_T ANSI_DARKGREY = "\033[01;30m";
 const RLUTIL_STRING_T ANSI_LIGHTRED = "\033[01;31m";
 const RLUTIL_STRING_T ANSI_LIGHTGREEN = "\033[01;32m";
@@ -93,7 +121,10 @@ const RLUTIL_STRING_T ANSI_LIGHTMAGENTA = "\033[01;35m";
 const RLUTIL_STRING_T ANSI_LIGHTCYAN = "\033[01;36m";
 const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
 
-/// Return ANSI color escape sequence for speficied number
+/// Function: getANSIColor
+/// Return ANSI color escape sequence for speficied number.
+///
+/// See <Color Codes>
 RLUTIL_STRING_T getANSIColor(const int c) {
 	switch (c) {
 		case 0 : return ANSI_BLACK;
@@ -116,7 +147,10 @@ RLUTIL_STRING_T getANSIColor(const int c) {
 	}
 }
 
-/// Change color specified by number (Windows / QBasic colors)
+/// Function: color
+/// Change color specified by number (Windows / QBasic colors).
+///
+/// See <Color Codes>
 void color(int c) {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -126,7 +160,8 @@ void color(int c) {
 #endif
 }
 
-/// Clear screen
+/// Function: cls
+/// Clears screen.
 void cls() {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
 	system("cls");
