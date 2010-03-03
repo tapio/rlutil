@@ -21,6 +21,14 @@
 #define RLUTIL_USE_ANSI
 #endif
 
+/// Define: RLUTIL_STRING_T
+/// Define/typedef this to your preference to override rlutil's string type.
+///
+/// Defaults to std::string with C++ and char* with C.
+#if 0
+#define RLUTIL_STRING_T char*
+#endif
+
 #ifdef __cplusplus
 	/// Common C++ headers
 	#include <iostream>
@@ -71,17 +79,21 @@ namespace rlutil {
 
 /**
  * Defs: Internal typedefs and macros
- * RLUTIL_STRING_T - String type depending which one of C or C++ is used
+ * RLUTIL_STRING_T - String type depending on which one of C or C++ is used
  * RLUTIL_PRINT(str) - Printing macro independent of C/C++
  */
 
 #ifdef __cplusplus
 	#include <iostream>
 	#include <string>
-	typedef std::string RLUTIL_STRING_T;
+	#ifndef RLUTIL_STRING_T
+		typedef std::string RLUTIL_STRING_T;
+	#endif // RLUTIL_STRING_T
 	void inline RLUTIL_PRINT(RLUTIL_STRING_T st) { std::cout << st; }
 #else // __cplusplus
-	typedef char* RLUTIL_STRING_T;
+	#ifndef RLUTIL_STRING_T
+		typedef char* RLUTIL_STRING_T;
+	#endif // RLUTIL_STRING_T
 	#define RLUTIL_PRINT(st) printf("%s", st)
 #endif // __cplusplus
 
