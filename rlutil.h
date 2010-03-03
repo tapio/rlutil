@@ -45,29 +45,42 @@
 	#else // __cplusplus
 		#include <stdio.h> // for getch()
 	#endif // __cplusplus
-	#include <termios.h>  // for getch()
-	#include <unistd.h>   // for getch() and (u)sleep()
+	#include <termios.h> // for getch() and kbhit()
+	#include <unistd.h> // for getch(), kbhit() and (u)sleep()
+	#include <sys/types.h> // for kbhit()
+	#include <sys/time.h> // for kbhit()
 
 /// Function: getch
-/// Get character without requiring pressing Enter.
+/// Get character without waiting for Return to be pressed.
 /// Windows has this in conio.h
 int getch() {
 	struct termios oldt, newt;
 	int ch;
-	tcgetattr( STDIN_FILENO, &oldt );
+	tcgetattr(STDIN_FILENO, &oldt);
 	newt = oldt;
-	newt.c_lflag &= ~( ICANON | ECHO );
-	tcsetattr( STDIN_FILENO, TCSANOW, &newt );
+	newt.c_lflag &= ~(ICANON | ECHO);
+	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 	ch = getchar();
-	tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
+	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 	return ch;
 }
 
 /// Function: kbhit
-/// Determines if keyboard has been hit. Dummy for Linux (in conio.h on Windows).
+/// Determines if keyboard has been hit.
+/// Windows has this in conio.h
 int kbhit() {
-	//TODO: Dummy implementation
-	return !0;
+	struct timeval tv;
+	struct termios t;
+	fd_set rdfs;
+	tcgetattr(STDIN_FILENO, &t);
+	t.c_lflag &= ~ICANON;
+	tcsetattr(0, TCSANOW, &t);
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+	FD_ZERO(&rdfs);
+	FD_SET(STDIN_FILENO, &rdfs);
+	select(STDIN_FILENO+1, &rdfs, NULL, NULL, &tv);
+	return FD_ISSET(STDIN_FILENO, &rdfs);
 }
 #endif // WIN32
 
