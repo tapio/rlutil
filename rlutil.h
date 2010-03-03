@@ -150,6 +150,14 @@ const RLUTIL_STRING_T ANSI_LIGHTMAGENTA = "\033[01;35m";
 const RLUTIL_STRING_T ANSI_LIGHTCYAN = "\033[01;36m";
 const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
 
+
+/// Function: nb_getch
+/// Non-blocking getch(). Returns 0 if no key was pressed.
+int inline nb_getch() {
+	if (kbhit()) return getch();
+	else return 0;
+}
+
 /// Function: getANSIColor
 /// Return ANSI color escape sequence for specified number.
 ///
@@ -216,6 +224,22 @@ void inline msleep(unsigned int ms) {
 void inline anykey() {
 	getch();
 }
+
+/// Function: min
+/// Returns the lesser of the two arguments.
+#ifdef __cplusplus
+template <class T> const T& min ( const T& a, const T& b ) { return (a<b)?a:b; }
+#else
+#define min(a,b) (((a)<(b))?(a):(b))
+#endif
+
+/// Function: max
+/// Returns the greater of the two arguments.
+#ifdef __cplusplus
+template <class T> const T& max ( const T& a, const T& b ) { return (b<a)?a:b; }
+#else
+#define max(a,b) (((b)<(a))?(a):(b))
+#endif
 
 #ifdef __cplusplus
 } // namespace rlutil
