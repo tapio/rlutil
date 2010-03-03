@@ -21,30 +21,10 @@
 #define RLUTIL_USE_ANSI
 #endif
 
-/**
- * Defs: Internal typedefs and macros (available globally)
- * RLUTIL_STRING_T - String type depending which one of C or C++ is used
- * RLUTIL_PRINT(str) - Printing macro independent of C/C++
- * bool - Boolean type for C
- * false - false for C
- * true - true for C
- */
-
 #ifdef __cplusplus
+	/// Common C++ headers
 	#include <iostream>
 	#include <string>
-	typedef std::string RLUTIL_STRING_T;
-	#define RLUTIL_PRINT(st) std::cout << st
-#else // __cplusplus
-	#ifndef bool
-		typedef int bool;
-	#endif // bool
-	#ifndef false
-		#define false 0
-		#define true (!false)
-	#endif // false
-	typedef char* RLUTIL_STRING_T;
-	#define RLUTIL_PRINT(st) printf("%s", st)
 #endif // __cplusplus
 
 #ifdef WIN32
@@ -81,6 +61,39 @@ bool kbhit() {
 	return true;
 }
 #endif // WIN32
+
+#ifdef __cplusplus
+/// Namespace: rlutil
+/// In C++ all functions except getch() and kbhit() are arranged under namespace rlutil.
+/// That is because they are found in conio.h on Windows.
+namespace rlutil {
+#endif
+
+/**
+ * Defs: Internal typedefs and macros (available globally)
+ * RLUTIL_STRING_T - String type depending which one of C or C++ is used
+ * RLUTIL_PRINT(str) - Printing macro independent of C/C++
+ * bool - Boolean type for C
+ * false - false for C
+ * true - true for C
+ */
+
+#ifdef __cplusplus
+	#include <iostream>
+	#include <string>
+	typedef std::string RLUTIL_STRING_T;
+	void inline RLUTIL_PRINT(RLUTIL_STRING_T st) { std::cout << st; }
+#else // __cplusplus
+	#ifndef bool
+		typedef int bool;
+	#endif // bool
+	#ifndef false
+		#define false 0
+		#define true (!false)
+	#endif // false
+	typedef char* RLUTIL_STRING_T;
+	#define RLUTIL_PRINT(st) printf("%s", st)
+#endif // __cplusplus
 
 /**
  * Consts: ANSI color strings
@@ -170,3 +183,6 @@ void cls() {
 #endif
 }
 
+#ifdef __cplusplus
+} // namespace rlutil
+#endif
