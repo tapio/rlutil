@@ -2,10 +2,10 @@ rlutil
 ======
 _Copyright (C) 2010 Tapio Vierros_
  
-_RLUTIL_ is simple utility collection to aid the creation of cross-platform console-mode roguelike games. It mainly concentrates on I/O stuff, e.g. color display and keyboard input.
+_RLUTIL_ is simple utility collection to aid the creation of cross-platform console-mode roguelike games with C++ and C. It mainly concentrates on I/O stuff, e.g. color display and keyboard input.
 
 ## USAGE ##
-Just `#include "rlutil.h"` in your source code. See the file for some hints on what's possible.
+Just `#include "rlutil.h"` in your source code. It automagically detects if you are using C++ or C and adjusts the code accordingly (e.g. `std::string` vs. `char*`). See the file for some hints on what's possible.
 
 ## LICENSE ##
 
