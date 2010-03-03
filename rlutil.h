@@ -122,7 +122,7 @@ const RLUTIL_STRING_T ANSI_LIGHTCYAN = "\033[01;36m";
 const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
 
 /// Function: getANSIColor
-/// Return ANSI color escape sequence for speficied number.
+/// Return ANSI color escape sequence for specified number.
 ///
 /// See <Color Codes>
 RLUTIL_STRING_T getANSIColor(const int c) {
@@ -147,11 +147,11 @@ RLUTIL_STRING_T getANSIColor(const int c) {
 	}
 }
 
-/// Function: color
+/// Function: setColor
 /// Change color specified by number (Windows / QBasic colors).
 ///
 /// See <Color Codes>
-void color(int c) {
+void setColor(int c) {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, c);
