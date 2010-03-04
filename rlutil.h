@@ -200,12 +200,12 @@ void inline setColor(int c) {
 }
 
 /// Function: cls
-/// Clears screen.
+/// Clears screen and moves cursor home.
 void inline cls() {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
 	system("cls");
 #else
-	RLUTIL_PRINT("\033[2J");
+	RLUTIL_PRINT("\033[2J\033[H");
 #endif
 }
 
