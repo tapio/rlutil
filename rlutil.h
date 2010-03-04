@@ -228,6 +228,20 @@ void locate(int x, int y) {
 #endif // WIN32 || USE_ANSI
 }
 
+/// Function: hidecursor
+/// Hides the cursor.
+void inline hidecursor() {
+	// TODO: WinAPI
+	RLUTIL_PRINT("\033[?25l");
+}
+
+/// Function: showcursor
+/// Shows the cursor.
+void inline showcursor() {
+	// TODO: WinAPI
+	RLUTIL_PRINT("\033[?25h");
+}
+
 /// Function: msleep
 /// Waits given number of milliseconds before continuing.
 void inline msleep(unsigned int ms) {
