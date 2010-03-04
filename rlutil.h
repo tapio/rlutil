@@ -42,7 +42,7 @@
 	#include <conio.h>    // for getch() and kbhit()
 #else
 	#ifdef __cplusplus
-		#include <cstdio> // for getch() and fflush()
+		#include <cstdio> // for getch()
 	#else // __cplusplus
 		#include <stdio.h> // for getch()
 	#endif // __cplusplus
@@ -231,15 +231,32 @@ void locate(int x, int y) {
 /// Function: hidecursor
 /// Hides the cursor.
 void inline hidecursor() {
-	// TODO: WinAPI
+#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsoleOutput;
+	CONSOLE_CURSOR_INFO structCursorInfo;
+	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
+	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
+	structCursorInfo.bVisible = FALSE;
+	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
+#else	// WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25l");
+#endif // WIN32 || USE_ANSI
 }
 
 /// Function: showcursor
 /// Shows the cursor.
 void inline showcursor() {
-	// TODO: WinAPI
+#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsoleOutput;
+	CONSOLE_CURSOR_INFO structCursorInfo;
+	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
+	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
+	structCursorInfo.bVisible = TRUE;
+	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
+#else	// WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25h");
+#endif // WIN32 || USE_ANSI
+
 }
 
 /// Function: msleep
