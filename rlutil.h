@@ -161,7 +161,7 @@ int inline nb_getch() {
 }
 
 /// Function: getANSIColor
-/// Return ANSI color escape sequence for specified number.
+/// Return ANSI color escape sequence for specified number 0-15.
 ///
 /// See <Color Codes>
 RLUTIL_STRING_T getANSIColor(const int c) {
@@ -210,10 +210,10 @@ void inline cls() {
 }
 
 /// Function: locate
-/// Sets the cursor position to x,y.
+/// Sets the cursor position to 1-based x,y.
 void locate(int x, int y) {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
-	COORD coord = {x, y};
+	COORD coord = {x-1, y-1};
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // WIN32 || USE_ANSI
 	#ifdef __cplusplus
