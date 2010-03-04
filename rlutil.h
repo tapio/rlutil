@@ -55,6 +55,7 @@
 /// Get character without waiting for Return to be pressed.
 /// Windows has this in conio.h
 int getch() {
+	// Here be magic.
 	struct termios oldt, newt;
 	int ch;
 	tcgetattr(STDIN_FILENO, &oldt);
@@ -70,6 +71,7 @@ int getch() {
 /// Determines if keyboard has been hit.
 /// Windows has this in conio.h
 int kbhit() {
+	// Here be dragons.
 	struct timeval tv;
 	struct termios t;
 	fd_set rdfs;
@@ -203,6 +205,7 @@ void inline setColor(int c) {
 /// Clears screen and moves cursor home.
 void inline cls() {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+	// TODO: This is cheating...
 	system("cls");
 #else
 	RLUTIL_PRINT("\033[2J\033[H");
@@ -213,7 +216,7 @@ void inline cls() {
 /// Sets the cursor position to 1-based x,y.
 void locate(int x, int y) {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
-	COORD coord = {x-1, y-1};
+	COORD coord = {x-1, y-1}; // Windows uses 0-based coordinates
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // WIN32 || USE_ANSI
 	#ifdef __cplusplus
@@ -228,6 +231,8 @@ void locate(int x, int y) {
 #endif // WIN32 || USE_ANSI
 }
 
+// TODO: Create RAII C++ object for hidecursor?
+
 /// Function: hidecursor
 /// Hides the cursor.
 void inline hidecursor() {
@@ -238,7 +243,7 @@ void inline hidecursor() {
 	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
 	structCursorInfo.bVisible = FALSE;
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
-#else	// WIN32 || USE_ANSI
+#else // WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25l");
 #endif // WIN32 || USE_ANSI
 }
@@ -253,7 +258,7 @@ void inline showcursor() {
 	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
 	structCursorInfo.bVisible = TRUE;
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
-#else	// WIN32 || USE_ANSI
+#else // WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25h");
 #endif // WIN32 || USE_ANSI
 
@@ -270,6 +275,8 @@ void inline msleep(unsigned int ms) {
 	usleep((ms % 1000000) * 1000);
 #endif
 }
+
+// TODO: Allow optional message for anykey()?
 
 /// Function: anykey
 /// Waits until a key is pressed.
