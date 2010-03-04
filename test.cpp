@@ -11,7 +11,7 @@
  * About: Licensing
  * See <License>
  */
-#define RLUTIL_USE_ANSI
+
 #include "rlutil.h"
 
 #define waitkey std::cout << "Press any key to continue..." << std::endl; rlutil::anykey()
