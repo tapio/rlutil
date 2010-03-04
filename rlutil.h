@@ -277,21 +277,26 @@ void inline anykey() {
 	getch();
 }
 
+#ifndef min
 /// Function: min
 /// Returns the lesser of the two arguments.
 #ifdef __cplusplus
 template <class T> const T& min ( const T& a, const T& b ) { return (a<b)?a:b; }
 #else
 #define min(a,b) (((a)<(b))?(a):(b))
-#endif
+#endif // __cplusplus
+#endif // min
 
+#ifndef max
 /// Function: max
 /// Returns the greater of the two arguments.
 #ifdef __cplusplus
 template <class T> const T& max ( const T& a, const T& b ) { return (b<a)?a:b; }
 #else
 #define max(a,b) (((b)<(a))?(a):(b))
-#endif
+#endif // __cplusplus
+#endif // max
+
 
 #ifdef __cplusplus
 } // namespace rlutil
