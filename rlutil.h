@@ -42,7 +42,7 @@
 	#include <conio.h>    // for getch() and kbhit()
 #else
 	#ifdef __cplusplus
-		#include <cstdio> // for getch() and fflush()
+		#include <cstdio> // for getch()
 	#else // __cplusplus
 		#include <stdio.h> // for getch()
 	#endif // __cplusplus
@@ -200,12 +200,12 @@ void inline setColor(int c) {
 }
 
 /// Function: cls
-/// Clears screen.
+/// Clears screen and moves cursor home.
 void inline cls() {
 #if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
 	system("cls");
 #else
-	RLUTIL_PRINT("\033[2J");
+	RLUTIL_PRINT("\033[2J\033[H");
 #endif
 }
 
@@ -231,15 +231,32 @@ void locate(int x, int y) {
 /// Function: hidecursor
 /// Hides the cursor.
 void inline hidecursor() {
-	// TODO: WinAPI
+#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsoleOutput;
+	CONSOLE_CURSOR_INFO structCursorInfo;
+	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
+	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
+	structCursorInfo.bVisible = FALSE;
+	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
+#else	// WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25l");
+#endif // WIN32 || USE_ANSI
 }
 
 /// Function: showcursor
 /// Shows the cursor.
 void inline showcursor() {
-	// TODO: WinAPI
+#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsoleOutput;
+	CONSOLE_CURSOR_INFO structCursorInfo;
+	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
+	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
+	structCursorInfo.bVisible = TRUE;
+	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
+#else	// WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25h");
+#endif // WIN32 || USE_ANSI
+
 }
 
 /// Function: msleep
@@ -260,21 +277,26 @@ void inline anykey() {
 	getch();
 }
 
+#ifndef min
 /// Function: min
 /// Returns the lesser of the two arguments.
 #ifdef __cplusplus
 template <class T> const T& min ( const T& a, const T& b ) { return (a<b)?a:b; }
 #else
 #define min(a,b) (((a)<(b))?(a):(b))
-#endif
+#endif // __cplusplus
+#endif // min
 
+#ifndef max
 /// Function: max
 /// Returns the greater of the two arguments.
 #ifdef __cplusplus
 template <class T> const T& max ( const T& a, const T& b ) { return (b<a)?a:b; }
 #else
 #define max(a,b) (((b)<(a))?(a):(b))
-#endif
+#endif // __cplusplus
+#endif // max
+
 
 #ifdef __cplusplus
 } // namespace rlutil
