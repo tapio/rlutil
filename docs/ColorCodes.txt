@@ -1,0 +1,24 @@
+Title: Color Codes
+
+These are the color codes used by rlutil's functions. They are similar to those of QBasic's. It is mentioned where the color is different from ANSI color codes.
+
+ - 0 Black
+ - 1 Blue (ANSI red)
+ - 2 Green
+ - 3 Cyan (ANSI brown)
+ - 4 Red (ANSI blue)
+ - 5 Magenta
+ - 6 Brown (dark yellow)
+ - 7 Light Grey (white)
+ - 8 Grey (dark grey or light black)
+ - 9 Light blue (ANSI light red)
+ - 10 Light green
+ - 11 Light cyan (ANSI yellow)
+ - 12 Light red (ANSI light magenta)
+ - 13 Light magenta
+ - 14 Yellow (ANSI light cyan)
+ - 15 White (bright)
+ 
+Note:
+Colors might appear slightly different on varying consoles. Also, some terminals render ANSI colors > 7 as bold.
+

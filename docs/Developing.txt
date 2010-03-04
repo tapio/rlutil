@@ -1,0 +1,19 @@
+Title: Developing
+
+This is a list of some development goals and guidelines used for developing this utility collection.
+
+Goals:
+ * Must be usable with both C and C++.
+ * Must work on Windows and Linux.
+ * Should work on Mac OSX.
+ * As identical behaviour across platforms as possible.
+
+Guidelines:
+ * Comment using Natural Docs format http://www.naturaldocs.org
+ * When creating global, overridable #defines or typedefs, prefix them with RLUTIL_ and use CAPS in the name.
+ * Use tabs instead of spaces for intendation.
+ * Prefer compact code (though not unclear).
+ * C++ stuff inside rlutil namespace.
+ * Use RLUTIL_STRING_T for string type and RLUTIL_PRINT for outputting.
+ * If something cannot be implemented in both C and C++, it must be #ifdef'ed out so that the code still compiles even though the function is not present. These kind of functions must be documented.
+

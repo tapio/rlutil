@@ -1,0 +1,7 @@
+Title: API Index
+
+Notes:
+- This is the entry point of the API reference.
+- Use the sidebar to navigate around.
+- This documentation is built from source code comments and the contents of docs-folder using Natural Docs -tool.
+- If you are currently viewing APIReference.txt plain text file, you are doing it wrong.
