@@ -95,8 +95,9 @@ int kbhit() {
 
 #ifdef __cplusplus
 /// Namespace: rlutil
-/// In C++ all functions except getch() and kbhit() are arranged under namespace rlutil.
-/// That is because they are found in conio.h on Windows.
+/// In C++ all functions except <getch>, <kbhit> and <gotoxy> are arranged
+/// under namespace rlutil. That is because some platforms have them defined
+/// outside of rlutil.
 namespace rlutil {
 #endif
 
