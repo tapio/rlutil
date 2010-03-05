@@ -135,7 +135,7 @@ namespace rlutil {
  * ANSI_LIGHTMAGENTA - Light magenta / light purple
  * ANSI_LIGHTCYAN - Light cyan
  * ANSI_WHITE - White (bright)
- **/
+ */
 const RLUTIL_STRING_T ANSI_CLS = "\033[2J";
 const RLUTIL_STRING_T ANSI_BLACK = "\033[22;30m";
 const RLUTIL_STRING_T ANSI_RED = "\033[22;31m";
@@ -154,6 +154,144 @@ const RLUTIL_STRING_T ANSI_LIGHTMAGENTA = "\033[01;35m";
 const RLUTIL_STRING_T ANSI_LIGHTCYAN = "\033[01;36m";
 const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
 
+/**
+ * Consts: Key codes for keyhit()
+ *
+ * KEY_ESCAPE  - Escape
+ * KEY_ENTER   - Enter
+ * KEY_INSERT  - Insert
+ * KEY_HOME    - Home
+ * KEY_PGUP    - PageUp
+ * KEY_DELETE  - Delete
+ * KEY_END     - End
+ * KEY_PGDOWN  - PageDown
+ * KEY_UP      - Up arrow
+ * KEY_DOWN    - Down arrow
+ * KEY_LEFT    - Left arrow
+ * KEY_RIGHT   - Right arrow
+ * KEY_F1      - F1
+ * KEY_F2      - F2
+ * KEY_F3      - F3
+ * KEY_F4      - F4
+ * KEY_F5      - F5
+ * KEY_F6      - F6
+ * KEY_F7      - F7
+ * KEY_F8      - F8
+ * KEY_F9      - F9
+ * KEY_F10     - F10
+ * KEY_F11     - F11
+ * KEY_F12     - F12
+ * KEY_NUMDEL  - Numpad del
+ * KEY_NUMPAD0 - Numpad 0
+ * KEY_NUMPAD1 - Numpad 1
+ * KEY_NUMPAD2 - Numpad 2
+ * KEY_NUMPAD3 - Numpad 3
+ * KEY_NUMPAD4 - Numpad 4
+ * KEY_NUMPAD5 - Numpad 5
+ * KEY_NUMPAD6 - Numpad 6
+ * KEY_NUMPAD7 - Numpad 7
+ * KEY_NUMPAD8 - Numpad 8
+ * KEY_NUMPAD9 - Numpad 9
+ */
+const int KEY_ESCAPE  = 0;
+const int KEY_ENTER   = 1;
+
+const int KEY_INSERT  = 2;
+const int KEY_HOME    = 3;
+const int KEY_PGUP    = 4;
+const int KEY_DELETE  = 5;
+const int KEY_END     = 6;
+const int KEY_PGDOWN  = 7;
+
+const int KEY_UP      = 14;
+const int KEY_DOWN    = 15;
+const int KEY_LEFT    = 16;
+const int KEY_RIGHT   = 17;
+
+const int KEY_F1      = 18;
+const int KEY_F2      = 19;
+const int KEY_F3      = 20;
+const int KEY_F4      = 21;
+const int KEY_F5      = 22;
+const int KEY_F6      = 23;
+const int KEY_F7      = 24;
+const int KEY_F8      = 25;
+const int KEY_F9      = 26;
+const int KEY_F10     = 27;
+const int KEY_F11     = 28;
+const int KEY_F12     = 29;
+
+const int KEY_NUMDEL  = 30;
+const int KEY_NUMPAD0 = 31;
+const int KEY_NUMPAD1 = 127;
+const int KEY_NUMPAD2 = 128;
+const int KEY_NUMPAD3 = 129;
+const int KEY_NUMPAD4 = 130;
+const int KEY_NUMPAD5 = 131;
+const int KEY_NUMPAD6 = 132;
+const int KEY_NUMPAD7 = 133;
+const int KEY_NUMPAD8 = 134;
+const int KEY_NUMPAD9 = 135;
+
+/// Function: getkey
+/// Reads a key press (blocking) and returns a key code.
+///
+/// See <Key codes for keyhit()>
+int getkey(void) {
+	int k;
+	k = getch();
+	switch(k) {
+		case 0: {
+			int kk;
+			switch (kk = getch()) {
+				case 71: return KEY_NUMPAD7;
+				case 72: return KEY_NUMPAD8;
+				case 73: return KEY_NUMPAD9;
+				case 75: return KEY_NUMPAD4;
+				case 77: return KEY_NUMPAD6;
+				case 79: return KEY_NUMPAD1;
+				case 80: return KEY_NUMPAD4;
+				case 81: return KEY_NUMPAD3;
+				case 82: return KEY_NUMPAD0;
+				case 83: return KEY_NUMDEL;
+				default: return kk-59+KEY_F1; // Function keys
+			}}
+		case 224: {
+			int kk;
+			switch (kk = getch()) {
+				case 71: return KEY_HOME;
+				case 72: return KEY_UP;
+				case 73: return KEY_PGUP;
+				case 75: return KEY_LEFT;
+				case 77: return KEY_RIGHT;
+				case 79: return KEY_END;
+				case 80: return KEY_DOWN;
+				case 81: return KEY_PGDOWN;
+				case 82: return KEY_INSERT;
+				case 83: return KEY_DELETE;
+				default: return kk-123+KEY_F1; // Function keys
+			}}
+		case 13: return KEY_ENTER;
+#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+		case 27: return KEY_ESCAPE;
+#else
+		case 27: {
+			// Process ANSI sequences
+			if (kbhit() && getch() == '[') {
+				if (!kbhit()) return KEY_ESCAPE;
+				int kk;
+				switch (kk = getch()) {
+					case 'A': return KEY_UP;
+					case 'B': return KEY_DOWN;
+					case 'C': return KEY_RIGHT;
+					case 'D': return KEY_LEFT;
+				}
+			} else return KEY_ESCAPE;
+#endif // WIN32 || USE_ANSI
+		}
+		default: return k;
+	}
+}
 
 /// Function: nb_getch
 /// Non-blocking getch(). Returns 0 if no key was pressed.
