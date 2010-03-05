@@ -231,6 +231,12 @@ void locate(int x, int y) {
 #endif // WIN32 || USE_ANSI
 }
 
+#ifndef gotoxy
+/// Function: gotoxy
+/// Same as <locate>.
+void inline gotoxy(int x, int y) { locate(x,y); }
+#endif // gotoxy
+
 // TODO: Create RAII C++ object for hidecursor?
 
 /// Function: hidecursor
