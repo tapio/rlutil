@@ -315,8 +315,8 @@ int getkey(void) {
 					case 'D': return KEY_LEFT;
 				}
 			} else return KEY_ESCAPE;
-#endif // WIN32
 		}
+#endif // WIN32
 		default: return k;
 	}
 }
