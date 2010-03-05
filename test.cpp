@@ -29,7 +29,7 @@ int main() {
 	waitkey;
 
 	rlutil::cls();
-	std::cout << "Test 2: Clear Screen" << std::endl;
+	std::cout << "Test 2: Clear screen" << std::endl;
 	std::cout << "The colors should now be gone." << std::endl;
 	waitkey;
 
@@ -104,7 +104,7 @@ int main() {
 		std::cout << "Test 8: Arrow keys" << std::endl;
 		std::cout << "You should be able to move the '@' character with arrow keys." << std::endl;
 		std::cout << "Hit Escape to continue to the next test." << std::endl;
-		gotoxy(x,y); std::cout << "@"; // Output player
+		gotoxy(x,y); std::cout << "@" << std::endl; // Output player
 		while (true) {
 			if (kbhit()) {
 				int k = rlutil::getkey(); // Get character

@@ -35,6 +35,10 @@
 	#include <iostream>
 	#include <string>
 	#include <sstream>
+	/// Namespace forward declarations
+	namespace rlutil {
+		void locate(int x, int y);
+	}
 #endif // __cplusplus
 
 #ifdef WIN32
@@ -92,6 +96,17 @@ int kbhit() {
 	return cnt; // Return number of characters
 }
 #endif // WIN32
+
+#ifndef gotoxy
+/// Function: gotoxy
+/// Same as <rlutil.locate>.
+void inline gotoxy(int x, int y) {
+	#ifdef __cplusplus
+	rlutil::
+	#endif
+	locate(x,y);
+}
+#endif // gotoxy
 
 #ifdef __cplusplus
 /// Namespace: rlutil
@@ -412,17 +427,6 @@ void inline showcursor() {
 #endif // WIN32 || USE_ANSI
 }
 
-#ifdef __cplusplus
-/// Class: CursorHider
-/// RAII OOP wrapper for <hidecursor>.
-/// Hides the cursor and shows it again
-/// when the object goes out of scope.
-struct CursorHider {
-	CursorHider() { hidecursor(); }
-	~CursorHider() { showcursor(); }
-};
-#endif // __cplusplus
-
 /// Function: msleep
 /// Waits given number of milliseconds before continuing.
 void inline msleep(unsigned int ms) {
@@ -463,18 +467,17 @@ template <class T> const T& max ( const T& a, const T& b ) { return (b<a)?a:b; }
 #endif // __cplusplus
 #endif // max
 
+// Classes are here at the end so that documentation is pretty.
 
 #ifdef __cplusplus
+/// Class: CursorHider
+/// RAII OOP wrapper for <rlutil.hidecursor>.
+/// Hides the cursor and shows it again
+/// when the object goes out of scope.
+struct CursorHider {
+	CursorHider() { hidecursor(); }
+	~CursorHider() { showcursor(); }
+};
+
 } // namespace rlutil
 #endif
-
-#ifndef gotoxy
-/// Function: gotoxy
-/// Same as <locate>.
-void inline gotoxy(int x, int y) {
-	#ifdef __cplusplus
-	rlutil::
-	#endif
-	locate(x,y);
-}
-#endif // gotoxy
