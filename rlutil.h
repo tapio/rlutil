@@ -38,7 +38,7 @@
 #endif // __cplusplus
 
 #ifdef WIN32
-	#include <windows.h>  // for color() and Sleep()
+	#include <windows.h>  // for WinAPI and Sleep()
 	#include <conio.h>    // for getch() and kbhit()
 #else
 	#ifdef __cplusplus
@@ -48,6 +48,7 @@
 	#endif // __cplusplus
 	#include <termios.h> // for getch() and kbhit()
 	#include <unistd.h> // for getch(), kbhit() and (u)sleep()
+	#include <sys/ioctl.h> // for getkey()
 	#include <sys/types.h> // for kbhit()
 	#include <sys/time.h> // for kbhit()
 
@@ -72,18 +73,23 @@ int getch() {
 /// Windows has this in conio.h
 int kbhit() {
 	// Here be dragons.
+	static struct termios oldt, newt;
+	int cnt = 0;
+	tcgetattr(STDIN_FILENO, &oldt);
+	newt = oldt;
+	newt.c_lflag    &= ~(ICANON | ECHO);
+	newt.c_iflag     = 0; // input mode
+	newt.c_oflag     = 0; // output mode
+	newt.c_cc[VMIN]  = 1; // minimum time to wait
+	newt.c_cc[VTIME] = 1; // minimum characters to wait for
+	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+	ioctl(0, FIONREAD, &cnt); // Read count
 	struct timeval tv;
-	struct termios t;
-	fd_set rdfs;
-	tcgetattr(STDIN_FILENO, &t);
-	t.c_lflag &= ~ICANON;
-	tcsetattr(0, TCSANOW, &t);
-	tv.tv_sec = 0;
-	tv.tv_usec = 0;
-	FD_ZERO(&rdfs);
-	FD_SET(STDIN_FILENO, &rdfs);
-	select(STDIN_FILENO+1, &rdfs, NULL, NULL, &tv);
-	return FD_ISSET(STDIN_FILENO, &rdfs);
+	tv.tv_sec  = 0;
+	tv.tv_usec = 100;
+	select(STDIN_FILENO+1, NULL, NULL, NULL, &tv); // A small time delay
+	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+	return cnt; // Return number of characters
 }
 #endif // WIN32
 
@@ -159,11 +165,12 @@ const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
  *
  * KEY_ESCAPE  - Escape
  * KEY_ENTER   - Enter
+ * KEY_SPACE   - Space
  * KEY_INSERT  - Insert
  * KEY_HOME    - Home
- * KEY_PGUP    - PageUp
- * KEY_DELETE  - Delete
  * KEY_END     - End
+ * KEY_DELETE  - Delete
+ * KEY_PGUP    - PageUp
  * KEY_PGDOWN  - PageDown
  * KEY_UP      - Up arrow
  * KEY_DOWN    - Down arrow
@@ -195,6 +202,7 @@ const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
  */
 const int KEY_ESCAPE  = 0;
 const int KEY_ENTER   = 1;
+const int KEY_SPACE   = 32;
 
 const int KEY_INSERT  = 2;
 const int KEY_HOME    = 3;
@@ -237,9 +245,14 @@ const int KEY_NUMPAD9 = 135;
 /// Reads a key press (blocking) and returns a key code.
 ///
 /// See <Key codes for keyhit()>
+///
+/// Note:
+/// Only Arrows, Esc, Enter and Space are currently working properly.
 int getkey(void) {
-	int k;
-	k = getch();
+	#ifndef WIN32
+	int cnt = kbhit(); // for ANSI escapes processing
+	#endif
+	int k = getch();
 	switch(k) {
 		case 0: {
 			int kk;
@@ -272,22 +285,21 @@ int getkey(void) {
 				default: return kk-123+KEY_F1; // Function keys
 			}}
 		case 13: return KEY_ENTER;
-#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+#ifdef WIN32
 		case 27: return KEY_ESCAPE;
-#else
+#else // WIN32
+		case 155: // single-character CSI
 		case 27: {
-			// Process ANSI sequences
-			if (kbhit() && getch() == '[') {
-				if (!kbhit()) return KEY_ESCAPE;
-				int kk;
-				switch (kk = getch()) {
+			// Process ANSI escape sequences
+			if (cnt >= 3 && getch() == '[') {
+				switch (k = getch()) {
 					case 'A': return KEY_UP;
 					case 'B': return KEY_DOWN;
 					case 'C': return KEY_RIGHT;
 					case 'D': return KEY_LEFT;
 				}
 			} else return KEY_ESCAPE;
-#endif // WIN32 || USE_ANSI
+#endif // WIN32
 		}
 		default: return k;
 	}
