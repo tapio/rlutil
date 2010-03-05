@@ -38,7 +38,7 @@
 #endif // __cplusplus
 
 #ifdef WIN32
-	#include <windows.h>  // for color() and Sleep()
+	#include <windows.h>  // for WinAPI and Sleep()
 	#include <conio.h>    // for getch() and kbhit()
 #else
 	#ifdef __cplusplus
@@ -48,6 +48,7 @@
 	#endif // __cplusplus
 	#include <termios.h> // for getch() and kbhit()
 	#include <unistd.h> // for getch(), kbhit() and (u)sleep()
+	#include <sys/ioctl.h> // for getkey()
 	#include <sys/types.h> // for kbhit()
 	#include <sys/time.h> // for kbhit()
 
@@ -72,25 +73,31 @@ int getch() {
 /// Windows has this in conio.h
 int kbhit() {
 	// Here be dragons.
+	static struct termios oldt, newt;
+	int cnt = 0;
+	tcgetattr(STDIN_FILENO, &oldt);
+	newt = oldt;
+	newt.c_lflag    &= ~(ICANON | ECHO);
+	newt.c_iflag     = 0; // input mode
+	newt.c_oflag     = 0; // output mode
+	newt.c_cc[VMIN]  = 1; // minimum time to wait
+	newt.c_cc[VTIME] = 1; // minimum characters to wait for
+	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+	ioctl(0, FIONREAD, &cnt); // Read count
 	struct timeval tv;
-	struct termios t;
-	fd_set rdfs;
-	tcgetattr(STDIN_FILENO, &t);
-	t.c_lflag &= ~ICANON;
-	tcsetattr(0, TCSANOW, &t);
-	tv.tv_sec = 0;
-	tv.tv_usec = 0;
-	FD_ZERO(&rdfs);
-	FD_SET(STDIN_FILENO, &rdfs);
-	select(STDIN_FILENO+1, &rdfs, NULL, NULL, &tv);
-	return FD_ISSET(STDIN_FILENO, &rdfs);
+	tv.tv_sec  = 0;
+	tv.tv_usec = 100;
+	select(STDIN_FILENO+1, NULL, NULL, NULL, &tv); // A small time delay
+	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+	return cnt; // Return number of characters
 }
 #endif // WIN32
 
 #ifdef __cplusplus
 /// Namespace: rlutil
-/// In C++ all functions except getch() and kbhit() are arranged under namespace rlutil.
-/// That is because they are found in conio.h on Windows.
+/// In C++ all functions except <getch>, <kbhit> and <gotoxy> are arranged
+/// under namespace rlutil. That is because some platforms have them defined
+/// outside of rlutil.
 namespace rlutil {
 #endif
 
@@ -135,7 +142,7 @@ namespace rlutil {
  * ANSI_LIGHTMAGENTA - Light magenta / light purple
  * ANSI_LIGHTCYAN - Light cyan
  * ANSI_WHITE - White (bright)
- **/
+ */
 const RLUTIL_STRING_T ANSI_CLS = "\033[2J";
 const RLUTIL_STRING_T ANSI_BLACK = "\033[22;30m";
 const RLUTIL_STRING_T ANSI_RED = "\033[22;31m";
@@ -154,6 +161,150 @@ const RLUTIL_STRING_T ANSI_LIGHTMAGENTA = "\033[01;35m";
 const RLUTIL_STRING_T ANSI_LIGHTCYAN = "\033[01;36m";
 const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
 
+/**
+ * Consts: Key codes for keyhit()
+ *
+ * KEY_ESCAPE  - Escape
+ * KEY_ENTER   - Enter
+ * KEY_SPACE   - Space
+ * KEY_INSERT  - Insert
+ * KEY_HOME    - Home
+ * KEY_END     - End
+ * KEY_DELETE  - Delete
+ * KEY_PGUP    - PageUp
+ * KEY_PGDOWN  - PageDown
+ * KEY_UP      - Up arrow
+ * KEY_DOWN    - Down arrow
+ * KEY_LEFT    - Left arrow
+ * KEY_RIGHT   - Right arrow
+ * KEY_F1      - F1
+ * KEY_F2      - F2
+ * KEY_F3      - F3
+ * KEY_F4      - F4
+ * KEY_F5      - F5
+ * KEY_F6      - F6
+ * KEY_F7      - F7
+ * KEY_F8      - F8
+ * KEY_F9      - F9
+ * KEY_F10     - F10
+ * KEY_F11     - F11
+ * KEY_F12     - F12
+ * KEY_NUMDEL  - Numpad del
+ * KEY_NUMPAD0 - Numpad 0
+ * KEY_NUMPAD1 - Numpad 1
+ * KEY_NUMPAD2 - Numpad 2
+ * KEY_NUMPAD3 - Numpad 3
+ * KEY_NUMPAD4 - Numpad 4
+ * KEY_NUMPAD5 - Numpad 5
+ * KEY_NUMPAD6 - Numpad 6
+ * KEY_NUMPAD7 - Numpad 7
+ * KEY_NUMPAD8 - Numpad 8
+ * KEY_NUMPAD9 - Numpad 9
+ */
+const int KEY_ESCAPE  = 0;
+const int KEY_ENTER   = 1;
+const int KEY_SPACE   = 32;
+
+const int KEY_INSERT  = 2;
+const int KEY_HOME    = 3;
+const int KEY_PGUP    = 4;
+const int KEY_DELETE  = 5;
+const int KEY_END     = 6;
+const int KEY_PGDOWN  = 7;
+
+const int KEY_UP      = 14;
+const int KEY_DOWN    = 15;
+const int KEY_LEFT    = 16;
+const int KEY_RIGHT   = 17;
+
+const int KEY_F1      = 18;
+const int KEY_F2      = 19;
+const int KEY_F3      = 20;
+const int KEY_F4      = 21;
+const int KEY_F5      = 22;
+const int KEY_F6      = 23;
+const int KEY_F7      = 24;
+const int KEY_F8      = 25;
+const int KEY_F9      = 26;
+const int KEY_F10     = 27;
+const int KEY_F11     = 28;
+const int KEY_F12     = 29;
+
+const int KEY_NUMDEL  = 30;
+const int KEY_NUMPAD0 = 31;
+const int KEY_NUMPAD1 = 127;
+const int KEY_NUMPAD2 = 128;
+const int KEY_NUMPAD3 = 129;
+const int KEY_NUMPAD4 = 130;
+const int KEY_NUMPAD5 = 131;
+const int KEY_NUMPAD6 = 132;
+const int KEY_NUMPAD7 = 133;
+const int KEY_NUMPAD8 = 134;
+const int KEY_NUMPAD9 = 135;
+
+/// Function: getkey
+/// Reads a key press (blocking) and returns a key code.
+///
+/// See <Key codes for keyhit()>
+///
+/// Note:
+/// Only Arrows, Esc, Enter and Space are currently working properly.
+int getkey(void) {
+	#ifndef WIN32
+	int cnt = kbhit(); // for ANSI escapes processing
+	#endif
+	int k = getch();
+	switch(k) {
+		case 0: {
+			int kk;
+			switch (kk = getch()) {
+				case 71: return KEY_NUMPAD7;
+				case 72: return KEY_NUMPAD8;
+				case 73: return KEY_NUMPAD9;
+				case 75: return KEY_NUMPAD4;
+				case 77: return KEY_NUMPAD6;
+				case 79: return KEY_NUMPAD1;
+				case 80: return KEY_NUMPAD4;
+				case 81: return KEY_NUMPAD3;
+				case 82: return KEY_NUMPAD0;
+				case 83: return KEY_NUMDEL;
+				default: return kk-59+KEY_F1; // Function keys
+			}}
+		case 224: {
+			int kk;
+			switch (kk = getch()) {
+				case 71: return KEY_HOME;
+				case 72: return KEY_UP;
+				case 73: return KEY_PGUP;
+				case 75: return KEY_LEFT;
+				case 77: return KEY_RIGHT;
+				case 79: return KEY_END;
+				case 80: return KEY_DOWN;
+				case 81: return KEY_PGDOWN;
+				case 82: return KEY_INSERT;
+				case 83: return KEY_DELETE;
+				default: return kk-123+KEY_F1; // Function keys
+			}}
+		case 13: return KEY_ENTER;
+#ifdef WIN32
+		case 27: return KEY_ESCAPE;
+#else // WIN32
+		case 155: // single-character CSI
+		case 27: {
+			// Process ANSI escape sequences
+			if (cnt >= 3 && getch() == '[') {
+				switch (k = getch()) {
+					case 'A': return KEY_UP;
+					case 'B': return KEY_DOWN;
+					case 'C': return KEY_RIGHT;
+					case 'D': return KEY_LEFT;
+				}
+			} else return KEY_ESCAPE;
+#endif // WIN32
+		}
+		default: return k;
+	}
+}
 
 /// Function: nb_getch
 /// Non-blocking getch(). Returns 0 if no key was pressed.
@@ -231,8 +382,6 @@ void locate(int x, int y) {
 #endif // WIN32 || USE_ANSI
 }
 
-// TODO: Create RAII C++ object for hidecursor?
-
 /// Function: hidecursor
 /// Hides the cursor.
 void inline hidecursor() {
@@ -261,8 +410,18 @@ void inline showcursor() {
 #else // WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25h");
 #endif // WIN32 || USE_ANSI
-
 }
+
+#ifdef __cplusplus
+/// Class: CursorHider
+/// RAII OOP wrapper for <hidecursor>.
+/// Hides the cursor and shows it again
+/// when the object goes out of scope.
+struct CursorHider {
+	CursorHider() { hidecursor(); }
+	~CursorHider() { showcursor(); }
+};
+#endif // __cplusplus
 
 /// Function: msleep
 /// Waits given number of milliseconds before continuing.
@@ -308,3 +467,14 @@ template <class T> const T& max ( const T& a, const T& b ) { return (b<a)?a:b; }
 #ifdef __cplusplus
 } // namespace rlutil
 #endif
+
+#ifndef gotoxy
+/// Function: gotoxy
+/// Same as <locate>.
+void inline gotoxy(int x, int y) {
+	#ifdef __cplusplus
+	rlutil::
+	#endif
+	locate(x,y);
+}
+#endif // gotoxy
