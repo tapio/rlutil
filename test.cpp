@@ -78,7 +78,7 @@ int main() {
 		std::cout << "You should be able to move the '@' character with WASD keys." << std::endl;
 		std::cout << "Hit Space to continue to the next test." << std::endl;
 		std::cout << "Turn count: " << cnt << std::endl;
-		rlutil::gotoxy(x,y); std::cout << "@" << std::endl; // Output player
+		rlutil::locate(x,y); std::cout << "@" << std::endl; // Output player
 		while (true) {
 			rlutil::locate(1,4); std::cout << "Turn count: " << cnt;
 			if (kbhit()) {
@@ -104,21 +104,23 @@ int main() {
 		std::cout << "Test 8: Arrow keys" << std::endl;
 		std::cout << "You should be able to move the '@' character with arrow keys." << std::endl;
 		std::cout << "Hit Escape to continue to the next test." << std::endl;
-		rlutil::locate(x,y); std::cout << "@" << std::endl; // Output player
+		gotoxy(x,y); std::cout << "@"; // Output player
 		while (true) {
 			if (kbhit()) {
 				int k = rlutil::getkey(); // Get character
-				rlutil::locate(x,y); std::cout << " " << std::endl; // Erase player
+				gotoxy(x,y); std::cout << " "; // Erase player
 				if (k == rlutil::KEY_LEFT) --x;
 				else if (k == rlutil::KEY_RIGHT) ++x;
 				else if (k == rlutil::KEY_UP) --y;
 				else if (k == rlutil::KEY_DOWN) ++y;
 				else if (k == rlutil::KEY_ESCAPE) break;
-				rlutil::locate(x,y); std::cout << "@" << std::endl; // Output player
+				gotoxy(x,y); std::cout << "@"; // Output player
+				fflush(stdout);
 			}
 		}
 	}
 
+	rlutil::cls();
 	std::cout << "Test 9: Delay" << std::endl;
 	std::cout << "Next numbers should appear rapidly after each other (but not instantly)." << std::endl;
 	rlutil::msleep(500);

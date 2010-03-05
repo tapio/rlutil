@@ -381,12 +381,6 @@ void locate(int x, int y) {
 #endif // WIN32 || USE_ANSI
 }
 
-#ifndef gotoxy
-/// Function: gotoxy
-/// Same as <locate>.
-void inline gotoxy(int x, int y) { locate(x,y); }
-#endif // gotoxy
-
 /// Function: hidecursor
 /// Hides the cursor.
 void inline hidecursor() {
@@ -472,3 +466,14 @@ template <class T> const T& max ( const T& a, const T& b ) { return (b<a)?a:b; }
 #ifdef __cplusplus
 } // namespace rlutil
 #endif
+
+#ifndef gotoxy
+/// Function: gotoxy
+/// Same as <locate>.
+void inline gotoxy(int x, int y) {
+	#ifdef __cplusplus
+	rlutil::
+	#endif
+	locate(x,y);
+}
+#endif // gotoxy
