@@ -471,7 +471,7 @@ template <class T> const T& max ( const T& a, const T& b ) { return (b<a)?a:b; }
 
 #ifdef __cplusplus
 /// Class: CursorHider
-/// RAII OOP wrapper for <hidecursor>.
+/// RAII OOP wrapper for <rlutil.hidecursor>.
 /// Hides the cursor and shows it again
 /// when the object goes out of scope.
 struct CursorHider {
