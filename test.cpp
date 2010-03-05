@@ -100,10 +100,11 @@ int main() {
 	// Test 8
 	{	int x = 7; int y = 7;
 		rlutil::cls();
+		rlutil::CursorHider curs;
 		std::cout << "Test 8: Arrow keys" << std::endl;
 		std::cout << "You should be able to move the '@' character with arrow keys." << std::endl;
 		std::cout << "Hit Escape to continue to the next test." << std::endl;
-		rlutil::gotoxy(x,y); std::cout << "@" << std::endl; // Output player
+		rlutil::locate(x,y); std::cout << "@" << std::endl; // Output player
 		while (true) {
 			if (kbhit()) {
 				int k = rlutil::getkey(); // Get character

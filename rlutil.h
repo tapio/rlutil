@@ -387,8 +387,6 @@ void locate(int x, int y) {
 void inline gotoxy(int x, int y) { locate(x,y); }
 #endif // gotoxy
 
-// TODO: Create RAII C++ object for hidecursor?
-
 /// Function: hidecursor
 /// Hides the cursor.
 void inline hidecursor() {
@@ -417,8 +415,18 @@ void inline showcursor() {
 #else // WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25h");
 #endif // WIN32 || USE_ANSI
-
 }
+
+#ifdef __cplusplus
+/// Class: CursorHider
+/// RAII OOP wrapper for <hidecursor>.
+/// Hides the cursor and shows it again
+/// when the object goes out of scope.
+struct CursorHider {
+	CursorHider() { hidecursor(); }
+	~CursorHider() { showcursor(); }
+};
+#endif // __cplusplus
 
 /// Function: msleep
 /// Waits given number of milliseconds before continuing.
