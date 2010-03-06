@@ -138,6 +138,45 @@ namespace rlutil {
 #endif // __cplusplus
 
 /**
+ * Enums: Color codes
+ *
+ * BLACK - Black
+ * RED - Red
+ * GREEN - Green
+ * BROWN - Brown / dark yellow
+ * BLUE - Blue
+ * MAGENTA - Magenta / purple
+ * CYAN - Cyan
+ * GREY - Grey / dark white
+ * DARKGREY - Dark grey / light black
+ * LIGHTRED - Light red
+ * LIGHTGREEN - Light green
+ * YELLOW - Yellow (bright)
+ * LIGHTBLUE - Light blue
+ * LIGHTMAGENTA - Light magenta / light purple
+ * LIGHTCYAN - Light cyan
+ * WHITE - White (bright)
+ */
+enum {
+	BLACK,
+	RED,
+	GREEN,
+	BROWN,
+	BLUE,
+	MAGENTA,
+	CYAN,
+	GREY,
+	DARKGREY,
+	LIGHTRED,
+	LIGHTGREEN,
+	YELLOW,
+	LIGHTBLUE,
+	LIGHTMAGENTA,
+	LIGHTCYAN,
+	WHITE
+};
+
+/**
  * Consts: ANSI color strings
  *
  * ANSI_CLS - Clears screen
@@ -149,7 +188,7 @@ namespace rlutil {
  * ANSI_MAGENTA - Magenta / purple
  * ANSI_CYAN - Cyan
  * ANSI_GREY - Grey / dark white
- * ANSI_DARKGREY - Dark Grey / light black
+ * ANSI_DARKGREY - Dark grey / light black
  * ANSI_LIGHTRED - Light red
  * ANSI_LIGHTGREEN - Light green
  * ANSI_YELLOW - Yellow (bright)
