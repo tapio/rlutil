@@ -130,13 +130,6 @@ int main() {
 	}
 	waitkey;
 
-	rlutil::cls();
-	std::cout << "Test 10: Console Dimensions" << std::endl;
-	std::cout << "You should see the dimensions of your console window in characters." << std::endl;
-	std::cout << rlutil::tcols() << " Columns" << std::endl;
-	std::cout << rlutil::trows() << " Rows" << std::endl;
-	waitkey;
-	
 	std::cout << "All tests done. Bye!" << std::endl;
 	return 0;
 }
