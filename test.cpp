@@ -13,6 +13,7 @@
  */
 
 #include "rlutil.h"
+#include <cstdio>
 
 #define waitkey std::cout << "Press any key to continue..." << std::endl; rlutil::anykey()
 
