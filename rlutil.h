@@ -478,6 +478,42 @@ void inline msleep(unsigned int ms) {
 #endif
 }
 
+/// Function: trows
+/// Get the number of rows in the terminal
+int trows() {
+#ifdef WIN32
+	return crows();
+#else
+#ifdef TIOCGSIZE
+	struct ttysize ts;
+	ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
+	return ts.ts_lines;
+#elif defined(TIOCGWINSZ)
+	struct winsize ts;
+	ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
+	return ts.ws_row;
+#endif // TIOCGSIZE
+#endif //WIN32
+}
+	
+/// Function: tcols
+/// Get the number of columns in the terminal
+int tcols() {
+#ifdef WIN32
+	return ccols();
+#else
+#ifdef TIOCGSIZE
+	struct ttysize ts;
+	ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
+	return ts.ts_cols;
+#elif defined(TIOCGWINSZ)
+	struct winsize ts;
+	ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
+	return ts.ws_col;
+#endif // TIOCGSIZE 
+#endif // WIN32 
+}	
+	
 // TODO: Allow optional message for anykey()?
 
 /// Function: anykey
