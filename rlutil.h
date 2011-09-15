@@ -39,6 +39,8 @@
 	namespace rlutil {
 		void locate(int x, int y);
 	}
+#else
+	void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
 #ifdef WIN32
