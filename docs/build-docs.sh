@@ -2,7 +2,7 @@
 # Script name: build-docs.sh
 # Description: Builds documentation and webpage
 
-ND="NaturalDocs"
+ND="naturaldocs"
 MD="markdown"
 SD="sed"
 

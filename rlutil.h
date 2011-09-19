@@ -39,6 +39,8 @@
 	namespace rlutil {
 		void locate(int x, int y);
 	}
+#else
+	void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
 #ifdef WIN32
@@ -478,6 +480,56 @@ void inline msleep(unsigned int ms) {
 #endif
 }
 
+/// Function: trows
+/// Get the number of rows in the terminal window or -1 on error.
+int trows() {
+#ifdef WIN32
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+		return -1;
+	else
+		return csbi.srWindow.Bottom - csbi.srWindow.Top + 1; // Window height
+		// return csbi.dwSize.Y; // Buffer height
+#else
+#ifdef TIOCGSIZE
+	struct ttysize ts;
+	ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
+	return ts.ts_lines;
+#elif defined(TIOCGWINSZ)
+	struct winsize ts;
+	ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
+	return ts.ws_row;
+#else // TIOCGSIZE
+	return -1;
+#endif // TIOCGSIZE
+#endif // WIN32
+}
+
+/// Function: tcols
+/// Get the number of columns in the terminal window or -1 on error.
+int tcols() {
+#ifdef WIN32
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+		return -1;
+	else
+		return csbi.srWindow.Right - csbi.srWindow.Left + 1; // Window width
+		// return csbi.dwSize.X; // Buffer width
+#else
+#ifdef TIOCGSIZE
+	struct ttysize ts;
+	ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
+	return ts.ts_cols;
+#elif defined(TIOCGWINSZ)
+	struct winsize ts;
+	ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
+	return ts.ws_col;
+#else // TIOCGSIZE
+	return -1;
+#endif // TIOCGSIZE
+#endif // WIN32
+}	
+	
 // TODO: Allow optional message for anykey()?
 
 /// Function: anykey

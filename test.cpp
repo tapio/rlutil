@@ -13,6 +13,7 @@
  */
 
 #include "rlutil.h"
+#include <cstdio>
 
 #define waitkey std::cout << "Press any key to continue..." << std::endl; rlutil::anykey()
 
@@ -130,6 +131,13 @@ int main() {
 	}
 	waitkey;
 
+	rlutil::cls();
+	std::cout << "Test 10: Terminal Dimensions" << std::endl;
+	std::cout << "You should see the size in character rows and columns of your terminal window." << std::endl;
+	std::cout << rlutil::trows() << " Rows" << std::endl;
+	std::cout << rlutil::tcols() << " Columns" << std::endl;
+	waitkey;
+	
 	std::cout << "All tests done. Bye!" << std::endl;
 	return 0;
 }
