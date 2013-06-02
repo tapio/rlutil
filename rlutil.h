@@ -43,9 +43,10 @@
 	void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
-#ifdef WIN32
+#ifdef _WIN32
 	#include <windows.h>  // for WinAPI and Sleep()
 	#include <conio.h>    // for getch() and kbhit()
+	int (*getch)(void) = _getch;
 #else
 	#ifdef __cplusplus
 		#include <cstdio> // for getch()
@@ -97,7 +98,7 @@ int kbhit() {
 	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 	return cnt; // Return number of characters
 }
-#endif // WIN32
+#endif // _WIN32
 
 #ifndef gotoxy
 /// Function: gotoxy
@@ -143,38 +144,38 @@ namespace rlutil {
  * Enums: Color codes
  *
  * BLACK - Black
- * RED - Red
- * GREEN - Green
- * BROWN - Brown / dark yellow
  * BLUE - Blue
- * MAGENTA - Magenta / purple
+ * GREEN - Green
  * CYAN - Cyan
+ * RED - Red
+ * MAGENTA - Magenta / purple
+ * BROWN - Brown / dark yellow
  * GREY - Grey / dark white
  * DARKGREY - Dark grey / light black
- * LIGHTRED - Light red
- * LIGHTGREEN - Light green
- * YELLOW - Yellow (bright)
  * LIGHTBLUE - Light blue
- * LIGHTMAGENTA - Light magenta / light purple
+ * LIGHTGREEN - Light green
  * LIGHTCYAN - Light cyan
+ * LIGHTRED - Light red
+ * LIGHTMAGENTA - Light magenta / light purple
+ * YELLOW - Yellow (bright)
  * WHITE - White (bright)
  */
 enum {
 	BLACK,
-	RED,
-	GREEN,
-	BROWN,
 	BLUE,
-	MAGENTA,
+	GREEN,
 	CYAN,
+	RED,
+	MAGENTA,
+	BROWN,
 	GREY,
 	DARKGREY,
-	LIGHTRED,
-	LIGHTGREEN,
-	YELLOW,
 	LIGHTBLUE,
-	LIGHTMAGENTA,
+	LIGHTGREEN,
 	LIGHTCYAN,
+	LIGHTRED,
+	LIGHTMAGENTA,
+	YELLOW,
 	WHITE
 };
 
@@ -306,7 +307,7 @@ const int KEY_NUMPAD9 = 135;
 /// Note:
 /// Only Arrows, Esc, Enter and Space are currently working properly.
 int getkey(void) {
-	#ifndef WIN32
+	#ifndef _WIN32
 	int cnt = kbhit(); // for ANSI escapes processing
 	#endif
 	int k = getch();
@@ -342,9 +343,9 @@ int getkey(void) {
 				default: return kk-123+KEY_F1; // Function keys
 			}}
 		case 13: return KEY_ENTER;
-#ifdef WIN32
+#ifdef _WIN32
 		case 27: return KEY_ESCAPE;
-#else // WIN32
+#else // _WIN32
 		case 155: // single-character CSI
 		case 27: {
 			// Process ANSI escape sequences
@@ -357,7 +358,7 @@ int getkey(void) {
 				}
 			} else return KEY_ESCAPE;
 		}
-#endif // WIN32
+#endif // _WIN32
 		default: return k;
 	}
 }
@@ -400,7 +401,7 @@ RLUTIL_STRING_T getANSIColor(const int c) {
 ///
 /// See <Color Codes>
 void inline setColor(int c) {
-#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, c);
 #else
@@ -411,7 +412,7 @@ void inline setColor(int c) {
 /// Function: cls
 /// Clears screen and moves cursor home.
 void inline cls() {
-#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	// TODO: This is cheating...
 	system("cls");
 #else
@@ -422,10 +423,10 @@ void inline cls() {
 /// Function: locate
 /// Sets the cursor position to 1-based x,y.
 void locate(int x, int y) {
-#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	COORD coord = {x-1, y-1}; // Windows uses 0-based coordinates
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-#else // WIN32 || USE_ANSI
+#else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
 		std::ostringstream oss;
 		oss << "\033[" << y << ";" << x << "H";
@@ -435,43 +436,43 @@ void locate(int x, int y) {
 		sprintf(buf, "\033[%d;%df", y, x);
 		RLUTIL_PRINT(buf);
 	#endif // __cplusplus
-#endif // WIN32 || USE_ANSI
+#endif // _WIN32 || USE_ANSI
 }
 
 /// Function: hidecursor
 /// Hides the cursor.
 void inline hidecursor() {
-#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
 	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
 	structCursorInfo.bVisible = FALSE;
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
-#else // WIN32 || USE_ANSI
+#else // _WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25l");
-#endif // WIN32 || USE_ANSI
+#endif // _WIN32 || USE_ANSI
 }
 
 /// Function: showcursor
 /// Shows the cursor.
 void inline showcursor() {
-#if defined(WIN32) && !defined(RLUTIL_USE_ANSI)
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
 	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
 	structCursorInfo.bVisible = TRUE;
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
-#else // WIN32 || USE_ANSI
+#else // _WIN32 || USE_ANSI
 	RLUTIL_PRINT("\033[?25h");
-#endif // WIN32 || USE_ANSI
+#endif // _WIN32 || USE_ANSI
 }
 
 /// Function: msleep
 /// Waits given number of milliseconds before continuing.
 void inline msleep(unsigned int ms) {
-#ifdef WIN32
+#ifdef _WIN32
 	Sleep(ms);
 #else
 	// usleep argument must be under 1 000 000
@@ -483,7 +484,7 @@ void inline msleep(unsigned int ms) {
 /// Function: trows
 /// Get the number of rows in the terminal window or -1 on error.
 int trows() {
-#ifdef WIN32
+#ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
 		return -1;
@@ -502,13 +503,13 @@ int trows() {
 #else // TIOCGSIZE
 	return -1;
 #endif // TIOCGSIZE
-#endif // WIN32
+#endif // _WIN32
 }
 
 /// Function: tcols
 /// Get the number of columns in the terminal window or -1 on error.
 int tcols() {
-#ifdef WIN32
+#ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
 		return -1;
@@ -527,7 +528,7 @@ int tcols() {
 #else // TIOCGSIZE
 	return -1;
 #endif // TIOCGSIZE
-#endif // WIN32
+#endif // _WIN32
 }	
 	
 // TODO: Allow optional message for anykey()?
