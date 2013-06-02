@@ -46,7 +46,8 @@
 #ifdef _WIN32
 	#include <windows.h>  // for WinAPI and Sleep()
 	#include <conio.h>    // for getch() and kbhit()
-	int (*getch)(void) = _getch;
+	int __cdecl (*getch)(void) = _getch;
+	int __cdecl (*kbhit)(void) = _kbhit;
 #else
 	#ifdef __cplusplus
 		#include <cstdio> // for getch()
@@ -62,7 +63,7 @@
 /// Function: getch
 /// Get character without waiting for Return to be pressed.
 /// Windows has this in conio.h
-int getch() {
+int getch(void) {
 	// Here be magic.
 	struct termios oldt, newt;
 	int ch;
@@ -78,7 +79,7 @@ int getch() {
 /// Function: kbhit
 /// Determines if keyboard has been hit.
 /// Windows has this in conio.h
-int kbhit() {
+int kbhit(void) {
 	// Here be dragons.
 	static struct termios oldt, newt;
 	int cnt = 0;
@@ -365,7 +366,7 @@ int getkey(void) {
 
 /// Function: nb_getch
 /// Non-blocking getch(). Returns 0 if no key was pressed.
-int inline nb_getch() {
+int inline nb_getch(void) {
 	if (kbhit()) return getch();
 	else return 0;
 }
@@ -411,7 +412,7 @@ void inline setColor(int c) {
 
 /// Function: cls
 /// Clears screen and moves cursor home.
-void inline cls() {
+void inline cls(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	// TODO: This is cheating...
 	system("cls");
@@ -441,7 +442,7 @@ void locate(int x, int y) {
 
 /// Function: hidecursor
 /// Hides the cursor.
-void inline hidecursor() {
+void inline hidecursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
@@ -456,7 +457,7 @@ void inline hidecursor() {
 
 /// Function: showcursor
 /// Shows the cursor.
-void inline showcursor() {
+void inline showcursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
@@ -483,7 +484,7 @@ void inline msleep(unsigned int ms) {
 
 /// Function: trows
 /// Get the number of rows in the terminal window or -1 on error.
-int trows() {
+int trows(void) {
 #ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
@@ -508,7 +509,7 @@ int trows() {
 
 /// Function: tcols
 /// Get the number of columns in the terminal window or -1 on error.
-int tcols() {
+int tcols(void) {
 #ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
@@ -535,7 +536,7 @@ int tcols() {
 
 /// Function: anykey
 /// Waits until a key is pressed.
-void inline anykey() {
+void inline anykey(void) {
 	getch();
 }
 
