@@ -105,7 +105,7 @@ int kbhit(void) {
 #ifndef gotoxy
 /// Function: gotoxy
 /// Same as <rlutil.locate>.
-void inline gotoxy(int x, int y) {
+inline void gotoxy(int x, int y) {
 	#ifdef __cplusplus
 	rlutil::
 	#endif
@@ -132,7 +132,7 @@ namespace rlutil {
 		typedef std::string RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
 
-	void inline RLUTIL_PRINT(RLUTIL_STRING_T st) { std::cout << st; }
+	inline void RLUTIL_PRINT(RLUTIL_STRING_T st) { std::cout << st; }
 
 #else // __cplusplus
 	#ifndef RLUTIL_STRING_T
@@ -367,7 +367,7 @@ int getkey(void) {
 
 /// Function: nb_getch
 /// Non-blocking getch(). Returns 0 if no key was pressed.
-int inline nb_getch(void) {
+inline int nb_getch(void) {
 	if (kbhit()) return getch();
 	else return 0;
 }
@@ -402,7 +402,7 @@ RLUTIL_STRING_T getANSIColor(const int c) {
 /// Change color specified by number (Windows / QBasic colors).
 ///
 /// See <Color Codes>
-void inline setColor(int c) {
+inline void setColor(int c) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, c);
@@ -413,7 +413,7 @@ void inline setColor(int c) {
 
 /// Function: cls
 /// Clears screen and moves cursor home.
-void inline cls(void) {
+inline void cls(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	// TODO: This is cheating...
 	system("cls");
@@ -443,7 +443,7 @@ void locate(int x, int y) {
 
 /// Function: hidecursor
 /// Hides the cursor.
-void inline hidecursor(void) {
+inline void hidecursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
@@ -458,7 +458,7 @@ void inline hidecursor(void) {
 
 /// Function: showcursor
 /// Shows the cursor.
-void inline showcursor(void) {
+inline void showcursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
@@ -473,7 +473,7 @@ void inline showcursor(void) {
 
 /// Function: msleep
 /// Waits given number of milliseconds before continuing.
-void inline msleep(unsigned int ms) {
+inline void msleep(unsigned int ms) {
 #ifdef _WIN32
 	Sleep(ms);
 #else
@@ -537,7 +537,7 @@ int tcols(void) {
 
 /// Function: anykey
 /// Waits until a key is pressed.
-void inline anykey(void) {
+inline void anykey(void) {
 	getch();
 }
 
