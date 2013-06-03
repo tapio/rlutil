@@ -45,6 +45,7 @@
 
 #ifdef _WIN32
 	#include <windows.h>  // for WinAPI and Sleep()
+	#define _NO_OLDNAMES  // for MinGW compatibility
 	#include <conio.h>    // for getch() and kbhit()
 	int __cdecl (*getch)(void) = _getch;
 	int __cdecl (*kbhit)(void) = _kbhit;
