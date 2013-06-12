@@ -411,7 +411,7 @@ RLUTIL_STRING_T getANSIColor(const int c) {
 _RLUTIL_INLINE void setColor(int c) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, c);
+	SetConsoleTextAttribute(hConsole, (WORD)c);
 #else
 	RLUTIL_PRINT(getANSIColor(c));
 #endif
@@ -432,7 +432,9 @@ _RLUTIL_INLINE void cls(void) {
 /// Sets the cursor position to 1-based x,y.
 void locate(int x, int y) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	COORD coord = {x-1, y-1}; // Windows uses 0-based coordinates
+	COORD coord;
+	coord.X = (SHORT)x-1;
+	coord.Y = (SHORT)y-1; // Windows uses 0-based coordinates
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
