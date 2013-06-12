@@ -43,12 +43,18 @@
 	void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
+#ifdef _MSC_VER
+#define _RLUTIL_INLINE __inline
+#else
+#define _RLUTIL_INLINE __inline__
+#endif
+
 #ifdef _WIN32
 	#include <windows.h>  // for WinAPI and Sleep()
 	#define _NO_OLDNAMES  // for MinGW compatibility
 	#include <conio.h>    // for getch() and kbhit()
-	int __cdecl (*getch)(void) = _getch;
-	int __cdecl (*kbhit)(void) = _kbhit;
+	#define getch _getch
+	#define kbhit _kbhit
 #else
 	#ifdef __cplusplus
 		#include <cstdio> // for getch()
@@ -105,7 +111,7 @@ int kbhit(void) {
 #ifndef gotoxy
 /// Function: gotoxy
 /// Same as <rlutil.locate>.
-inline void gotoxy(int x, int y) {
+_RLUTIL_INLINE void gotoxy(int x, int y) {
 	#ifdef __cplusplus
 	rlutil::
 	#endif
@@ -367,7 +373,7 @@ int getkey(void) {
 
 /// Function: nb_getch
 /// Non-blocking getch(). Returns 0 if no key was pressed.
-inline int nb_getch(void) {
+_RLUTIL_INLINE int nb_getch(void) {
 	if (kbhit()) return getch();
 	else return 0;
 }
@@ -402,7 +408,7 @@ RLUTIL_STRING_T getANSIColor(const int c) {
 /// Change color specified by number (Windows / QBasic colors).
 ///
 /// See <Color Codes>
-inline void setColor(int c) {
+_RLUTIL_INLINE void setColor(int c) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, c);
@@ -413,7 +419,7 @@ inline void setColor(int c) {
 
 /// Function: cls
 /// Clears screen and moves cursor home.
-inline void cls(void) {
+_RLUTIL_INLINE void cls(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	// TODO: This is cheating...
 	system("cls");
@@ -443,7 +449,7 @@ void locate(int x, int y) {
 
 /// Function: hidecursor
 /// Hides the cursor.
-inline void hidecursor(void) {
+_RLUTIL_INLINE void hidecursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
@@ -458,7 +464,7 @@ inline void hidecursor(void) {
 
 /// Function: showcursor
 /// Shows the cursor.
-inline void showcursor(void) {
+_RLUTIL_INLINE void showcursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
@@ -473,7 +479,7 @@ inline void showcursor(void) {
 
 /// Function: msleep
 /// Waits given number of milliseconds before continuing.
-inline void msleep(unsigned int ms) {
+_RLUTIL_INLINE void msleep(unsigned int ms) {
 #ifdef _WIN32
 	Sleep(ms);
 #else
@@ -537,7 +543,7 @@ int tcols(void) {
 
 /// Function: anykey
 /// Waits until a key is pressed.
-inline void anykey(void) {
+_RLUTIL_INLINE void anykey(void) {
 	getch();
 }
 
