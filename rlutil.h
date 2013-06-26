@@ -72,7 +72,7 @@
 /// Function: getch
 /// Get character without waiting for Return to be pressed.
 /// Windows has this in conio.h
-int getch(void) {
+RLUTIL_INLINE int getch(void) {
 	// Here be magic.
 	struct termios oldt, newt;
 	int ch;
@@ -88,7 +88,7 @@ int getch(void) {
 /// Function: kbhit
 /// Determines if keyboard has been hit.
 /// Windows has this in conio.h
-int kbhit(void) {
+RLUTIL_INLINE int kbhit(void) {
 	// Here be dragons.
 	static struct termios oldt, newt;
 	int cnt = 0;
@@ -316,7 +316,7 @@ const int KEY_NUMPAD9 = 135;
 ///
 /// Note:
 /// Only Arrows, Esc, Enter and Space are currently working properly.
-int getkey(void) {
+RLUTIL_INLINE int getkey(void) {
 	#ifndef _WIN32
 	int cnt = kbhit(); // for ANSI escapes processing
 	#endif
@@ -384,7 +384,7 @@ RLUTIL_INLINE int nb_getch(void) {
 /// Return ANSI color escape sequence for specified number 0-15.
 ///
 /// See <Color Codes>
-RLUTIL_STRING_T getANSIColor(const int c) {
+RLUTIL_INLINE RLUTIL_STRING_T getANSIColor(const int c) {
 	switch (c) {
 		case 0 : return ANSI_BLACK;
 		case 1 : return ANSI_BLUE; // non-ANSI
@@ -432,7 +432,7 @@ RLUTIL_INLINE void cls(void) {
 
 /// Function: locate
 /// Sets the cursor position to 1-based x,y.
-void locate(int x, int y) {
+RLUTIL_INLINE void locate(int x, int y) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	COORD coord;
 	coord.X = (SHORT)x-1;
@@ -495,7 +495,7 @@ RLUTIL_INLINE void msleep(unsigned int ms) {
 
 /// Function: trows
 /// Get the number of rows in the terminal window or -1 on error.
-int trows(void) {
+RLUTIL_INLINE int trows(void) {
 #ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
@@ -520,7 +520,7 @@ int trows(void) {
 
 /// Function: tcols
 /// Get the number of columns in the terminal window or -1 on error.
-int tcols(void) {
+RLUTIL_INLINE int tcols(void) {
 #ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
