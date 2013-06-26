@@ -43,10 +43,12 @@
 	void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
-#ifdef _MSC_VER
-#define RLUTIL_INLINE __inline
-#else
-#define RLUTIL_INLINE __inline__
+#ifndef RLUTIL_INLINE
+	#ifdef _MSC_VER
+		#define RLUTIL_INLINE __inline
+	#else
+		#define RLUTIL_INLINE __inline__
+	#endif
 #endif
 
 #ifdef _WIN32
