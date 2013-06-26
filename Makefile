@@ -4,10 +4,10 @@ CFLAGS=-I. -Wall -Wextra
 
 all: test example-c
 
-test:
+test: rlutil.h
 	$(CXX) $(CFLAGS) -o test test.cpp
 
-example-c:
+example-c: rlutil.h
 	$(CC) $(CFLAGS) -o example-c example.c
 	
 .PHONY: clean
