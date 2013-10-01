@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RLUTIL_H
+#define RLUTIL_H
 /**
  * File: rlutil.h
  *
@@ -92,6 +93,7 @@ RLUTIL_INLINE int kbhit(void) {
 	// Here be dragons.
 	static struct termios oldt, newt;
 	int cnt = 0;
+	struct timeval tv;
 	tcgetattr(STDIN_FILENO, &oldt);
 	newt = oldt;
 	newt.c_lflag    &= ~(ICANON | ECHO);
@@ -101,7 +103,6 @@ RLUTIL_INLINE int kbhit(void) {
 	newt.c_cc[VTIME] = 1; // minimum characters to wait for
 	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 	ioctl(0, FIONREAD, &cnt); // Read count
-	struct timeval tv;
 	tv.tv_sec  = 0;
 	tv.tv_usec = 100;
 	select(STDIN_FILENO+1, NULL, NULL, NULL, &tv); // A small time delay
@@ -584,4 +585,6 @@ struct CursorHider {
 };
 
 } // namespace rlutil
+#endif
+
 #endif
