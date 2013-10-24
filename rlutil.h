@@ -89,7 +89,7 @@ RLUTIL_INLINE int getch(void) {
 /// Function: kbhit
 /// Determines if keyboard has been hit.
 /// Windows has this in conio.h
-RLUTIL_INLINE int kbhit(void) {
+static RLUTIL_INLINE int kbhit(void) {
 	// Here be dragons.
 	static struct termios oldt, newt;
 	int cnt = 0;
