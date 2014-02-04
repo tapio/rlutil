@@ -317,7 +317,7 @@ const int KEY_NUMPAD9 = 135;
 ///
 /// Note:
 /// Only Arrows, Esc, Enter and Space are currently working properly.
-RLUTIL_INLINE int getkey(void) {
+static RLUTIL_INLINE int getkey(void) {
 	#ifndef _WIN32
 	int cnt = kbhit(); // for ANSI escapes processing
 	#endif
@@ -376,7 +376,7 @@ RLUTIL_INLINE int getkey(void) {
 
 /// Function: nb_getch
 /// Non-blocking getch(). Returns 0 if no key was pressed.
-RLUTIL_INLINE int nb_getch(void) {
+static RLUTIL_INLINE int nb_getch(void) {
 	if (kbhit()) return getch();
 	else return 0;
 }
