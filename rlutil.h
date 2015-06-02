@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RLUTIL_H
+#define RLUTIL_H
 /**
  * File: rlutil.h
  *
@@ -30,6 +31,14 @@
 #define RLUTIL_STRING_T char*
 #endif
 
+#ifndef RLUTIL_INLINE
+	#ifdef _MSC_VER
+		#define RLUTIL_INLINE __inline
+	#else
+		#define RLUTIL_INLINE __inline__
+	#endif
+#endif
+
 #ifdef __cplusplus
 	/// Common C++ headers
 	#include <iostream>
@@ -40,16 +49,8 @@
 		void locate(int x, int y);
 	}
 #else
-	void locate(int x, int y); // Forward declare for C to avoid warnings
+	RLUTIL_INLINE void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
-
-#ifndef RLUTIL_INLINE
-	#ifdef _MSC_VER
-		#define RLUTIL_INLINE __inline
-	#else
-		#define RLUTIL_INLINE __inline__
-	#endif
-#endif
 
 #ifdef _WIN32
 	#include <windows.h>  // for WinAPI and Sleep()
@@ -88,10 +89,11 @@ RLUTIL_INLINE int getch(void) {
 /// Function: kbhit
 /// Determines if keyboard has been hit.
 /// Windows has this in conio.h
-RLUTIL_INLINE int kbhit(void) {
+static RLUTIL_INLINE int kbhit(void) {
 	// Here be dragons.
 	static struct termios oldt, newt;
 	int cnt = 0;
+	struct timeval tv;
 	tcgetattr(STDIN_FILENO, &oldt);
 	newt = oldt;
 	newt.c_lflag    &= ~(ICANON | ECHO);
@@ -101,7 +103,6 @@ RLUTIL_INLINE int kbhit(void) {
 	newt.c_cc[VTIME] = 1; // minimum characters to wait for
 	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 	ioctl(0, FIONREAD, &cnt); // Read count
-	struct timeval tv;
 	tv.tv_sec  = 0;
 	tv.tv_usec = 100;
 	select(STDIN_FILENO+1, NULL, NULL, NULL, &tv); // A small time delay
@@ -316,7 +317,7 @@ const int KEY_NUMPAD9 = 135;
 ///
 /// Note:
 /// Only Arrows, Esc, Enter and Space are currently working properly.
-RLUTIL_INLINE int getkey(void) {
+static RLUTIL_INLINE int getkey(void) {
 	#ifndef _WIN32
 	int cnt = kbhit(); // for ANSI escapes processing
 	#endif
@@ -375,7 +376,7 @@ RLUTIL_INLINE int getkey(void) {
 
 /// Function: nb_getch
 /// Non-blocking getch(). Returns 0 if no key was pressed.
-RLUTIL_INLINE int nb_getch(void) {
+static RLUTIL_INLINE int nb_getch(void) {
 	if (kbhit()) return getch();
 	else return 0;
 }
@@ -481,18 +482,6 @@ RLUTIL_INLINE void showcursor(void) {
 #endif // _WIN32 || USE_ANSI
 }
 
-/// Function: msleep
-/// Waits given number of milliseconds before continuing.
-RLUTIL_INLINE void msleep(unsigned int ms) {
-#ifdef _WIN32
-	Sleep(ms);
-#else
-	// usleep argument must be under 1 000 000
-	if (ms > 1000) sleep(ms/1000000);
-	usleep((ms % 1000000) * 1000);
-#endif
-}
-
 /// Function: trows
 /// Get the number of rows in the terminal window or -1 on error.
 RLUTIL_INLINE int trows(void) {
@@ -584,4 +573,6 @@ struct CursorHider {
 };
 
 } // namespace rlutil
+#endif
+
 #endif
