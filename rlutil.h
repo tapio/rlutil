@@ -34,7 +34,6 @@
 	/// Common C++ headers
 	#include <iostream>
 	#include <string>
-	#include <sstream>
 	/// Namespace forward declarations
 	namespace rlutil {
 		void locate(int x, int y);
@@ -440,9 +439,7 @@ RLUTIL_INLINE void locate(int x, int y) {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
-		std::ostringstream oss;
-		oss << "\033[" << y << ";" << x << "H";
-		RLUTIL_PRINT(oss.str());
+		RLUTIL_PRINT("\033[" << y << ";" << x << "H");
 	#else // __cplusplus
 		char buf[32];
 		sprintf(buf, "\033[%d;%df", y, x);
@@ -541,8 +538,8 @@ RLUTIL_INLINE int tcols(void) {
 	return -1;
 #endif // TIOCGSIZE
 #endif // _WIN32
-}	
-	
+}
+
 // TODO: Allow optional message for anykey()?
 
 /// Function: anykey
