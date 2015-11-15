@@ -427,10 +427,9 @@ RLUTIL_INLINE int saveDefaultColor() {
 	static char initialized = 0; // bool
 	static WORD attributes;
 
-	if(!initialized) {
+	if (!initialized) {
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
 		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-
 		attributes = csbi.wAttributes;
 		initialized = 1;
 	}
@@ -606,7 +605,7 @@ template <class T> void anykey(const T& msg) {
 	RLUTIL_PRINT(msg);
 #else
 RLUTIL_INLINE void anykey(const char* msg) { // cannot use `const RLUTIL_STRING_T` here, because it yields char * const
-	if(msg)
+	if (msg)
 		RLUTIL_PRINT(msg);
 #endif // __cplusplus
 	getch();
