@@ -423,8 +423,20 @@ RLUTIL_INLINE void setColor(int c) {
 /// Clears screen and moves cursor home.
 RLUTIL_INLINE void cls(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	// TODO: This is cheating...
-	system("cls");
+	// Based on https://msdn.microsoft.com/en-us/library/windows/desktop/ms682022%28v=vs.85%29.aspx
+	const HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	const COORD coordScreen = {0, 0};
+	DWORD cCharsWritten;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+	const DWORD dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
+	FillConsoleOutputCharacter(hConsole, (TCHAR)' ', dwConSize, coordScreen, &cCharsWritten);
+
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+	FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
+
+	SetConsoleCursorPosition(hConsole, coordScreen);
 #else
 	RLUTIL_PRINT("\033[2J\033[H");
 #endif
