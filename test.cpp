@@ -15,7 +15,7 @@
 #include "rlutil.h"
 #include <cstdio>
 
-#define waitkey std::cout << "Press any key to continue..." << std::endl; rlutil::anykey()
+#define waitkey rlutil::anykey("Press any key to continue...\n")
 
 int main() {
 	std::cout << "Welcome to rlutil test program." << std::endl;
