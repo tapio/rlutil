@@ -226,7 +226,7 @@ const RLUTIL_STRING_T ANSI_LIGHTCYAN = "\033[01;36m";
 const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
 
 /**
- * Consts: Key codes for keyhit()
+ * Enums: Key codes for keyhit()
  *
  * KEY_ESCAPE  - Escape
  * KEY_ENTER   - Enter
@@ -265,46 +265,48 @@ const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
  * KEY_NUMPAD8 - Numpad 8
  * KEY_NUMPAD9 - Numpad 9
  */
-const int KEY_ESCAPE  = 0;
-const int KEY_ENTER   = 1;
-const int KEY_SPACE   = 32;
+enum {
+	KEY_ESCAPE  = 0,
+	KEY_ENTER   = 1,
+	KEY_SPACE   = 32,
 
-const int KEY_INSERT  = 2;
-const int KEY_HOME    = 3;
-const int KEY_PGUP    = 4;
-const int KEY_DELETE  = 5;
-const int KEY_END     = 6;
-const int KEY_PGDOWN  = 7;
+	KEY_INSERT  = 2,
+	KEY_HOME    = 3,
+	KEY_PGUP    = 4,
+	KEY_DELETE  = 5,
+	KEY_END     = 6,
+	KEY_PGDOWN  = 7,
 
-const int KEY_UP      = 14;
-const int KEY_DOWN    = 15;
-const int KEY_LEFT    = 16;
-const int KEY_RIGHT   = 17;
+	KEY_UP      = 14,
+	KEY_DOWN    = 15,
+	KEY_LEFT    = 16,
+	KEY_RIGHT   = 17,
 
-const int KEY_F1      = 18;
-const int KEY_F2      = 19;
-const int KEY_F3      = 20;
-const int KEY_F4      = 21;
-const int KEY_F5      = 22;
-const int KEY_F6      = 23;
-const int KEY_F7      = 24;
-const int KEY_F8      = 25;
-const int KEY_F9      = 26;
-const int KEY_F10     = 27;
-const int KEY_F11     = 28;
-const int KEY_F12     = 29;
+	KEY_F1      = 18,
+	KEY_F2      = 19,
+	KEY_F3      = 20,
+	KEY_F4      = 21,
+	KEY_F5      = 22,
+	KEY_F6      = 23,
+	KEY_F7      = 24,
+	KEY_F8      = 25,
+	KEY_F9      = 26,
+	KEY_F10     = 27,
+	KEY_F11     = 28,
+	KEY_F12     = 29,
 
-const int KEY_NUMDEL  = 30;
-const int KEY_NUMPAD0 = 31;
-const int KEY_NUMPAD1 = 127;
-const int KEY_NUMPAD2 = 128;
-const int KEY_NUMPAD3 = 129;
-const int KEY_NUMPAD4 = 130;
-const int KEY_NUMPAD5 = 131;
-const int KEY_NUMPAD6 = 132;
-const int KEY_NUMPAD7 = 133;
-const int KEY_NUMPAD8 = 134;
-const int KEY_NUMPAD9 = 135;
+	KEY_NUMDEL  = 30,
+	KEY_NUMPAD0 = 31,
+	KEY_NUMPAD1 = 127,
+	KEY_NUMPAD2 = 128,
+	KEY_NUMPAD3 = 129,
+	KEY_NUMPAD4 = 130,
+	KEY_NUMPAD5 = 131,
+	KEY_NUMPAD6 = 132,
+	KEY_NUMPAD7 = 133,
+	KEY_NUMPAD8 = 134,
+	KEY_NUMPAD9 = 135
+};
 
 /// Function: getkey
 /// Reads a key press (blocking) and returns a key code.
