@@ -30,6 +30,14 @@
 #define RLUTIL_STRING_T char*
 #endif
 
+#ifndef RLUTIL_INLINE
+	#ifdef _MSC_VER
+		#define RLUTIL_INLINE __inline
+	#else
+		#define RLUTIL_INLINE static __inline__
+	#endif
+#endif
+
 #ifdef __cplusplus
 	/// Common C++ headers
 	#include <iostream>
@@ -37,19 +45,11 @@
 	#include <sstream>
 	/// Namespace forward declarations
 	namespace rlutil {
-		void locate(int x, int y);
+		RLUTIL_INLINE void locate(int x, int y);
 	}
 #else
-	void locate(int x, int y); // Forward declare for C to avoid warnings
+	RLUTIL_INLINE void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
-
-#ifndef RLUTIL_INLINE
-	#ifdef _MSC_VER
-		#define RLUTIL_INLINE __inline
-	#else
-		#define RLUTIL_INLINE __inline__
-	#endif
-#endif
 
 #ifdef _WIN32
 	#include <windows.h>  // for WinAPI and Sleep()
