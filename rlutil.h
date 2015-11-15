@@ -42,12 +42,13 @@
 	/// Common C++ headers
 	#include <iostream>
 	#include <string>
-	#include <sstream>
+	#include <cstdio> // for getch()
 	/// Namespace forward declarations
 	namespace rlutil {
 		RLUTIL_INLINE void locate(int x, int y);
 	}
 #else
+	#include <stdio.h> // for getch() / printf()
 	RLUTIL_INLINE void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
@@ -58,11 +59,6 @@
 	#define getch _getch
 	#define kbhit _kbhit
 #else
-	#ifdef __cplusplus
-		#include <cstdio> // for getch()
-	#else // __cplusplus
-		#include <stdio.h> // for getch()
-	#endif // __cplusplus
 	#include <termios.h> // for getch() and kbhit()
 	#include <unistd.h> // for getch(), kbhit() and (u)sleep()
 	#include <sys/ioctl.h> // for getkey()
@@ -140,8 +136,7 @@ namespace rlutil {
 		typedef std::string RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
 
-	inline void RLUTIL_PRINT(RLUTIL_STRING_T st) { std::cout << st; }
-
+	#define RLUTIL_PRINT(st) do { std::cout << st; } while(false)
 #else // __cplusplus
 	#ifndef RLUTIL_STRING_T
 		typedef char* RLUTIL_STRING_T;
@@ -229,7 +224,7 @@ const RLUTIL_STRING_T ANSI_LIGHTCYAN = "\033[01;36m";
 const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
 
 /**
- * Consts: Key codes for keyhit()
+ * Enums: Key codes for keyhit()
  *
  * KEY_ESCAPE  - Escape
  * KEY_ENTER   - Enter
@@ -268,46 +263,48 @@ const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
  * KEY_NUMPAD8 - Numpad 8
  * KEY_NUMPAD9 - Numpad 9
  */
-const int KEY_ESCAPE  = 0;
-const int KEY_ENTER   = 1;
-const int KEY_SPACE   = 32;
+enum {
+	KEY_ESCAPE  = 0,
+	KEY_ENTER   = 1,
+	KEY_SPACE   = 32,
 
-const int KEY_INSERT  = 2;
-const int KEY_HOME    = 3;
-const int KEY_PGUP    = 4;
-const int KEY_DELETE  = 5;
-const int KEY_END     = 6;
-const int KEY_PGDOWN  = 7;
+	KEY_INSERT  = 2,
+	KEY_HOME    = 3,
+	KEY_PGUP    = 4,
+	KEY_DELETE  = 5,
+	KEY_END     = 6,
+	KEY_PGDOWN  = 7,
 
-const int KEY_UP      = 14;
-const int KEY_DOWN    = 15;
-const int KEY_LEFT    = 16;
-const int KEY_RIGHT   = 17;
+	KEY_UP      = 14,
+	KEY_DOWN    = 15,
+	KEY_LEFT    = 16,
+	KEY_RIGHT   = 17,
 
-const int KEY_F1      = 18;
-const int KEY_F2      = 19;
-const int KEY_F3      = 20;
-const int KEY_F4      = 21;
-const int KEY_F5      = 22;
-const int KEY_F6      = 23;
-const int KEY_F7      = 24;
-const int KEY_F8      = 25;
-const int KEY_F9      = 26;
-const int KEY_F10     = 27;
-const int KEY_F11     = 28;
-const int KEY_F12     = 29;
+	KEY_F1      = 18,
+	KEY_F2      = 19,
+	KEY_F3      = 20,
+	KEY_F4      = 21,
+	KEY_F5      = 22,
+	KEY_F6      = 23,
+	KEY_F7      = 24,
+	KEY_F8      = 25,
+	KEY_F9      = 26,
+	KEY_F10     = 27,
+	KEY_F11     = 28,
+	KEY_F12     = 29,
 
-const int KEY_NUMDEL  = 30;
-const int KEY_NUMPAD0 = 31;
-const int KEY_NUMPAD1 = 127;
-const int KEY_NUMPAD2 = 128;
-const int KEY_NUMPAD3 = 129;
-const int KEY_NUMPAD4 = 130;
-const int KEY_NUMPAD5 = 131;
-const int KEY_NUMPAD6 = 132;
-const int KEY_NUMPAD7 = 133;
-const int KEY_NUMPAD8 = 134;
-const int KEY_NUMPAD9 = 135;
+	KEY_NUMDEL  = 30,
+	KEY_NUMPAD0 = 31,
+	KEY_NUMPAD1 = 127,
+	KEY_NUMPAD2 = 128,
+	KEY_NUMPAD3 = 129,
+	KEY_NUMPAD4 = 130,
+	KEY_NUMPAD5 = 131,
+	KEY_NUMPAD6 = 132,
+	KEY_NUMPAD7 = 133,
+	KEY_NUMPAD8 = 134,
+	KEY_NUMPAD9 = 135
+};
 
 /// Function: getkey
 /// Reads a key press (blocking) and returns a key code.
@@ -419,12 +416,62 @@ RLUTIL_INLINE void setColor(int c) {
 #endif
 }
 
+/// Function: saveDefaultColor
+/// Call once to preserve colors for use in resetColor()
+/// on Windows without ANSI, no-op otherwise
+///
+/// See <Color Codes>
+/// See <resetColor>
+RLUTIL_INLINE int saveDefaultColor() {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	static char initialized = 0; // bool
+	static WORD attributes;
+
+	if (!initialized) {
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+		attributes = csbi.wAttributes;
+		initialized = 1;
+	}
+	return attributes;
+#else
+	return -1;
+#endif
+}
+
+/// Function: resetColor
+/// Reset color to default
+/// Requires a call to saveDefaultColor() to set the defaults
+///
+/// See <Color Codes>
+/// See <setColor>
+/// See <saveDefaultColor>
+RLUTIL_INLINE void resetColor() {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	setColor(saveDefaultColor());
+#else
+	RLUTIL_PRINT("\033[39;49m");
+#endif
+}
+
 /// Function: cls
 /// Clears screen and moves cursor home.
 RLUTIL_INLINE void cls(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	// TODO: This is cheating...
-	system("cls");
+	// Based on https://msdn.microsoft.com/en-us/library/windows/desktop/ms682022%28v=vs.85%29.aspx
+	const HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	const COORD coordScreen = {0, 0};
+	DWORD cCharsWritten;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+	const DWORD dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
+	FillConsoleOutputCharacter(hConsole, (TCHAR)' ', dwConSize, coordScreen, &cCharsWritten);
+
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+	FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
+
+	SetConsoleCursorPosition(hConsole, coordScreen);
 #else
 	RLUTIL_PRINT("\033[2J\033[H");
 #endif
@@ -440,9 +487,7 @@ RLUTIL_INLINE void locate(int x, int y) {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
-		std::ostringstream oss;
-		oss << "\033[" << y << ";" << x << "H";
-		RLUTIL_PRINT(oss.str());
+		RLUTIL_PRINT("\033[" << y << ";" << x << "H");
 	#else // __cplusplus
 		char buf[32];
 		sprintf(buf, "\033[%d;%df", y, x);
@@ -560,7 +605,7 @@ template <class T> void anykey(const T& msg) {
 	RLUTIL_PRINT(msg);
 #else
 RLUTIL_INLINE void anykey(const char* msg) { // cannot use `const RLUTIL_STRING_T` here, because it yields char * const
-	if(msg)
+	if (msg)
 		RLUTIL_PRINT(msg);
 #endif // __cplusplus
 	getch();
