@@ -42,7 +42,6 @@
 	/// Common C++ headers
 	#include <iostream>
 	#include <string>
-	#include <sstream>
 	#include <cstdio> // for getch()
 	/// Namespace forward declarations
 	namespace rlutil {
@@ -137,8 +136,7 @@ namespace rlutil {
 		typedef std::string RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
 
-	inline void RLUTIL_PRINT(RLUTIL_STRING_T st) { std::cout << st; }
-
+	#define RLUTIL_PRINT(st) do { std::cout << st; } while(false)
 #else // __cplusplus
 	#ifndef RLUTIL_STRING_T
 		typedef char* RLUTIL_STRING_T;
@@ -490,9 +488,7 @@ RLUTIL_INLINE void locate(int x, int y) {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
-		std::ostringstream oss;
-		oss << "\033[" << y << ";" << x << "H";
-		RLUTIL_PRINT(oss.str());
+		RLUTIL_PRINT("\033[" << y << ";" << x << "H");
 	#else // __cplusplus
 		char buf[32];
 		sprintf(buf, "\033[%d;%df", y, x);
