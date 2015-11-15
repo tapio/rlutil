@@ -43,11 +43,13 @@
 	#include <iostream>
 	#include <string>
 	#include <sstream>
+	#include <cstdio> // for getch()
 	/// Namespace forward declarations
 	namespace rlutil {
 		RLUTIL_INLINE void locate(int x, int y);
 	}
 #else
+	#include <stdio.h> // for getch() / printf()
 	RLUTIL_INLINE void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
@@ -58,11 +60,6 @@
 	#define getch _getch
 	#define kbhit _kbhit
 #else
-	#ifdef __cplusplus
-		#include <cstdio> // for getch()
-	#else // __cplusplus
-		#include <stdio.h> // for getch()
-	#endif // __cplusplus
 	#include <termios.h> // for getch() and kbhit()
 	#include <unistd.h> // for getch(), kbhit() and (u)sleep()
 	#include <sys/ioctl.h> // for getkey()
