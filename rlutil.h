@@ -541,13 +541,28 @@ RLUTIL_INLINE int tcols(void) {
 	return -1;
 #endif // TIOCGSIZE
 #endif // _WIN32
-}	
-	
-// TODO: Allow optional message for anykey()?
+}
 
 /// Function: anykey
 /// Waits until a key is pressed.
-RLUTIL_INLINE void anykey(void) {
+/// In C++, it either takes no arguments
+/// or a template-type-argument-deduced
+/// argument.
+/// In C, it takes a const char* representing
+/// the message to be displayed, or NULL
+/// for no message.
+#ifdef __cplusplus
+RLUTIL_INLINE void anykey() {
+	getch();
+}
+
+template <class T> void anykey(const T& msg) {
+	RLUTIL_PRINT(msg);
+#else
+RLUTIL_INLINE void anykey(const char* msg) { // cannot use `const RLUTIL_STRING_T` here, because it yields char * const
+	if(msg)
+		RLUTIL_PRINT(msg);
+#endif // __cplusplus
 	getch();
 }
 
