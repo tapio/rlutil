@@ -30,6 +30,14 @@
 #define RLUTIL_STRING_T char*
 #endif
 
+#ifndef RLUTIL_INLINE
+	#ifdef _MSC_VER
+		#define RLUTIL_INLINE __inline
+	#else
+		#define RLUTIL_INLINE static __inline__
+	#endif
+#endif
+
 #ifdef __cplusplus
 	/// Common C++ headers
 	#include <iostream>
@@ -37,18 +45,18 @@
 	#include <sstream>
 	/// Namespace forward declarations
 	namespace rlutil {
-		void locate(int x, int y);
+		RLUTIL_INLINE void locate(int x, int y);
 	}
 #else
-	void locate(int x, int y); // Forward declare for C to avoid warnings
+	RLUTIL_INLINE void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
 #ifdef _WIN32
 	#include <windows.h>  // for WinAPI and Sleep()
 	#define _NO_OLDNAMES  // for MinGW compatibility
 	#include <conio.h>    // for getch() and kbhit()
-	int __cdecl (*getch)(void) = _getch;
-	int __cdecl (*kbhit)(void) = _kbhit;
+	#define getch _getch
+	#define kbhit _kbhit
 #else
 	#ifdef __cplusplus
 		#include <cstdio> // for getch()
@@ -64,7 +72,7 @@
 /// Function: getch
 /// Get character without waiting for Return to be pressed.
 /// Windows has this in conio.h
-int getch(void) {
+RLUTIL_INLINE int getch(void) {
 	// Here be magic.
 	struct termios oldt, newt;
 	int ch;
@@ -80,7 +88,7 @@ int getch(void) {
 /// Function: kbhit
 /// Determines if keyboard has been hit.
 /// Windows has this in conio.h
-int kbhit(void) {
+RLUTIL_INLINE int kbhit(void) {
 	// Here be dragons.
 	static struct termios oldt, newt;
 	int cnt = 0;
@@ -105,7 +113,7 @@ int kbhit(void) {
 #ifndef gotoxy
 /// Function: gotoxy
 /// Same as <rlutil.locate>.
-inline void gotoxy(int x, int y) {
+RLUTIL_INLINE void gotoxy(int x, int y) {
 	#ifdef __cplusplus
 	rlutil::
 	#endif
@@ -308,7 +316,7 @@ const int KEY_NUMPAD9 = 135;
 ///
 /// Note:
 /// Only Arrows, Esc, Enter and Space are currently working properly.
-int getkey(void) {
+RLUTIL_INLINE int getkey(void) {
 	#ifndef _WIN32
 	int cnt = kbhit(); // for ANSI escapes processing
 	#endif
@@ -367,7 +375,7 @@ int getkey(void) {
 
 /// Function: nb_getch
 /// Non-blocking getch(). Returns 0 if no key was pressed.
-inline int nb_getch(void) {
+RLUTIL_INLINE int nb_getch(void) {
 	if (kbhit()) return getch();
 	else return 0;
 }
@@ -376,7 +384,7 @@ inline int nb_getch(void) {
 /// Return ANSI color escape sequence for specified number 0-15.
 ///
 /// See <Color Codes>
-RLUTIL_STRING_T getANSIColor(const int c) {
+RLUTIL_INLINE RLUTIL_STRING_T getANSIColor(const int c) {
 	switch (c) {
 		case 0 : return ANSI_BLACK;
 		case 1 : return ANSI_BLUE; // non-ANSI
@@ -402,10 +410,10 @@ RLUTIL_STRING_T getANSIColor(const int c) {
 /// Change color specified by number (Windows / QBasic colors).
 ///
 /// See <Color Codes>
-inline void setColor(int c) {
+RLUTIL_INLINE void setColor(int c) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, c);
+	SetConsoleTextAttribute(hConsole, (WORD)c);
 #else
 	RLUTIL_PRINT(getANSIColor(c));
 #endif
@@ -413,7 +421,7 @@ inline void setColor(int c) {
 
 /// Function: cls
 /// Clears screen and moves cursor home.
-inline void cls(void) {
+RLUTIL_INLINE void cls(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	// TODO: This is cheating...
 	system("cls");
@@ -424,9 +432,11 @@ inline void cls(void) {
 
 /// Function: locate
 /// Sets the cursor position to 1-based x,y.
-void locate(int x, int y) {
+RLUTIL_INLINE void locate(int x, int y) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	COORD coord = {x-1, y-1}; // Windows uses 0-based coordinates
+	COORD coord;
+	coord.X = (SHORT)x-1;
+	coord.Y = (SHORT)y-1; // Windows uses 0-based coordinates
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
@@ -443,7 +453,7 @@ void locate(int x, int y) {
 
 /// Function: hidecursor
 /// Hides the cursor.
-inline void hidecursor(void) {
+RLUTIL_INLINE void hidecursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
@@ -458,7 +468,7 @@ inline void hidecursor(void) {
 
 /// Function: showcursor
 /// Shows the cursor.
-inline void showcursor(void) {
+RLUTIL_INLINE void showcursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput;
 	CONSOLE_CURSOR_INFO structCursorInfo;
@@ -473,7 +483,7 @@ inline void showcursor(void) {
 
 /// Function: msleep
 /// Waits given number of milliseconds before continuing.
-inline void msleep(unsigned int ms) {
+RLUTIL_INLINE void msleep(unsigned int ms) {
 #ifdef _WIN32
 	Sleep(ms);
 #else
@@ -485,7 +495,7 @@ inline void msleep(unsigned int ms) {
 
 /// Function: trows
 /// Get the number of rows in the terminal window or -1 on error.
-int trows(void) {
+RLUTIL_INLINE int trows(void) {
 #ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
@@ -510,7 +520,7 @@ int trows(void) {
 
 /// Function: tcols
 /// Get the number of columns in the terminal window or -1 on error.
-int tcols(void) {
+RLUTIL_INLINE int tcols(void) {
 #ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
@@ -531,13 +541,28 @@ int tcols(void) {
 	return -1;
 #endif // TIOCGSIZE
 #endif // _WIN32
-}	
-	
-// TODO: Allow optional message for anykey()?
+}
 
 /// Function: anykey
 /// Waits until a key is pressed.
-inline void anykey(void) {
+/// In C++, it either takes no arguments
+/// or a template-type-argument-deduced
+/// argument.
+/// In C, it takes a const char* representing
+/// the message to be displayed, or NULL
+/// for no message.
+#ifdef __cplusplus
+RLUTIL_INLINE void anykey() {
+	getch();
+}
+
+template <class T> void anykey(const T& msg) {
+	RLUTIL_PRINT(msg);
+#else
+RLUTIL_INLINE void anykey(const char* msg) { // cannot use `const RLUTIL_STRING_T` here, because it yields char * const
+	if(msg)
+		RLUTIL_PRINT(msg);
+#endif // __cplusplus
 	getch();
 }
 

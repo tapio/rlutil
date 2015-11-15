@@ -1,16 +1,17 @@
 CC=gcc
 CXX=g++
-CFLAGS=-I. -Wall -Wextra
+CFLAGS=-I. -g -O2 -Wall -Wextra
 
 all: test example-c
 
-test:
+test: rlutil.h test.cpp
 	$(CXX) $(CFLAGS) -o test test.cpp
 
-example-c:
+example-c: rlutil.h example.c
 	$(CC) $(CFLAGS) -o example-c example.c
 	
 .PHONY: clean
 
 clean:
-	rm test example-c
+	rm -f test example-c
+

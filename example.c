@@ -47,7 +47,7 @@ void draw() {
 	setColor(MAGENTA);
 	printf("Moves: %d\n", moves);
 	setColor(GREEN);
-	printf("Level: %d\n", level); 
+	printf("Level: %d\n", level);
 	locate(1, 1);
 	int i, j;
 	for (j = 0; j < MAPSIZE; j++) {
@@ -75,8 +75,7 @@ int main() {
 	setColor(2);
 	printf("Welcome! Use WASD to move.\n");
 	setColor(6);
-	printf("Hit any key to start.\n");
-	anykey();
+	anykey("Hit any key to start.\n");
 	draw();
 	while (1) {
 		// Input
