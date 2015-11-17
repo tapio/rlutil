@@ -23,8 +23,8 @@ int main() {
 	std::cout << "Welcome to rlutil test program." << std::endl;
 	waitkey;
 
-	std::cout << "Test 0: Background colors\n";
-	for (int i = 0; i < 16; i++) {
+	std::cout << "Test 1: Background colors\n";
+	for (int i = 0; i < 8; i++) {
 		rlutil::setBackgroundColor(i);
 		std::cout << i;
 		rlutil::setBackgroundColor(0);
@@ -35,7 +35,7 @@ int main() {
 	             "You should see numbers 0-15 in different-colored backgrounds.\n";
 	waitkey;
 
-	std::cout << "Test 1: Colors" << std::endl;
+	std::cout << "Test 2: Colors" << std::endl;
 	for (int i = 0; i < 16; i++) {
 		rlutil::setColor(i);
 		std::cout << i << " ";
@@ -45,22 +45,22 @@ int main() {
 	waitkey;
 
 	rlutil::cls();
-	std::cout << "Test 2: Clear screen" << std::endl;
+	std::cout << "Test 3: Clear screen" << std::endl;
 	std::cout << "The colors should now be gone." << std::endl;
 	waitkey;
 
-	std::cout << "Test 3: Cursor hiding" << std::endl;
+	std::cout << "Test 4: Cursor hiding" << std::endl;
 	rlutil::hidecursor();
 	std::cout << "The cursor should now be invisible." << std::endl;
 	waitkey;
 
-	std::cout << "Test 4: Cursor showing" << std::endl;
+	std::cout << "Test 5: Cursor showing" << std::endl;
 	rlutil::showcursor();
 	std::cout << "The cursor should now be visible again." << std::endl;
 	waitkey;
 
 	rlutil::cls();
-	std::cout << "Test 5: Cursor positioning" << std::endl;
+	std::cout << "Test 6: Cursor positioning" << std::endl;
 	rlutil::locate(16,6); std::cout << "(16,6)";
 	rlutil::locate(4,3); std::cout << "(4,3)";
 	rlutil::locate(8,8); std::cout << "(8,8)";
@@ -71,7 +71,7 @@ int main() {
 	{	int x = 7; int y = 7; unsigned int cnt = 0;
 		while (true) {
 			rlutil::cls();
-			std::cout << "Test 6: Blocking keyboard input" << std::endl;
+			std::cout << "Test 7: Blocking keyboard input" << std::endl;
 			std::cout << "You should be able to move the '@' character with WASD keys." << std::endl;
 			std::cout << "Hit Space to continue to the next test." << std::endl;
 			std::cout << "Turn count: " << cnt << std::endl;
@@ -90,7 +90,7 @@ int main() {
 	{	int x = 7; int y = 7; unsigned int cnt = 0;
 		rlutil::hidecursor();
 		rlutil::cls();
-		std::cout << "Test 7: Non-blocking keyboard input" << std::endl;
+		std::cout << "Test 8: Non-blocking keyboard input" << std::endl;
 		std::cout << "You should be able to move the '@' character with WASD keys." << std::endl;
 		std::cout << "Hit Space to continue to the next test." << std::endl;
 		std::cout << "Turn count: " << cnt << std::endl;
@@ -137,7 +137,7 @@ int main() {
 	}
 
 	rlutil::cls();
-	std::cout << "Test 9: Delay" << std::endl;
+	std::cout << "Test 10: Delay" << std::endl;
 	std::cout << "Next numbers should appear rapidly after each other (but not instantly)." << std::endl;
 	rlutil::msleep(500);
 	for (float t = 0; t <= 4; t += 0.33333333f) {
@@ -147,7 +147,7 @@ int main() {
 	waitkey;
 
 	rlutil::cls();
-	std::cout << "Test 10: Terminal Dimensions" << std::endl;
+	std::cout << "Test 11: Terminal Dimensions" << std::endl;
 	std::cout << "You should see the size in character rows and columns of your terminal window." << std::endl;
 	std::cout << rlutil::trows() << " Rows" << std::endl;
 	std::cout << rlutil::tcols() << " Columns" << std::endl;
