@@ -23,7 +23,7 @@ int main() {
 	std::cout << "Welcome to rlutil test program.\n";
 	waitkey;
 
-	std::cout << "Test 1: Colors";
+	std::cout << "Test 1: Colors\n";
 	for (int i = 0; i < 16; i++) {
 		rlutil::setColor(i);
 		std::cout << i << " ";
@@ -41,8 +41,7 @@ int main() {
 		std::cout << ' ';
 	}
 	rlutil::resetColor();
-	std::cout << "\n"
-	             "You should see numbers 0-7 in different-colored backgrounds.\n";
+	std::cout << "\nYou should see numbers 0-7 in different-colored backgrounds.\n";
 	waitkey;
 
 	rlutil::cls();
@@ -69,7 +68,7 @@ int main() {
 	             "You should see three coordinates in their specified locations.\n";
 	waitkey;
 
-	// Test 6
+	// Test 7
 	{	int x = 7; int y = 7; unsigned int cnt = 0;
 		while (true) {
 			rlutil::cls();
@@ -88,7 +87,7 @@ int main() {
 		}
 	}
 
-	// Test 7
+	// Test 8
 	{	int x = 7; int y = 7; unsigned int cnt = 0;
 		rlutil::hidecursor();
 		rlutil::cls();
@@ -115,7 +114,7 @@ int main() {
 		rlutil::showcursor();
 	}
 
-	// Test 8
+	// Test 9
 	{	int x = 7; int y = 7;
 		rlutil::cls();
 		rlutil::CursorHider curs;
@@ -142,9 +141,9 @@ int main() {
 	std::cout << "Test 10: Delay\n"
 	             "Next numbers should appear rapidly after each other (but not instantly)." << std::endl;
 	rlutil::msleep(500);
-	for (float t = 0; t < 5; t += 0.33333333f) {
+	for (float t = 0; t <= 2; t += 0.25f) {
 		std::cout << t << "s" << std::endl;
-		rlutil::msleep(333);
+		rlutil::msleep(250);
 	}
 	waitkey;
 
