@@ -72,6 +72,7 @@ void draw() {
 /// Main loop and input handling
 int main() {
 	hidecursor();
+	saveDefaultColor();
 	gen(level);
 	setColor(2);
 	printf("Welcome! Use WASD to move.\n");
@@ -100,6 +101,7 @@ int main() {
 			if (--torch <= 0) break;
 		}
 	}
+	resetColor();
 	showcursor();
 	return 0;
 }

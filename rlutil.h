@@ -42,7 +42,6 @@
 	/// Common C++ headers
 	#include <iostream>
 	#include <string>
-	#include <sstream>
 	#include <cstdio> // for getch()
 	/// Namespace forward declarations
 	namespace rlutil {
@@ -137,8 +136,7 @@ namespace rlutil {
 		typedef std::string RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
 
-	inline void RLUTIL_PRINT(RLUTIL_STRING_T st) { std::cout << st; }
-
+	#define RLUTIL_PRINT(st) do { std::cout << st; } while(false)
 #else // __cplusplus
 	#ifndef RLUTIL_STRING_T
 		typedef char* RLUTIL_STRING_T;
@@ -189,41 +187,58 @@ enum {
 /**
  * Consts: ANSI color strings
  *
- * ANSI_CLS - Clears screen
- * ANSI_BLACK - Black
- * ANSI_RED - Red
- * ANSI_GREEN - Green
- * ANSI_BROWN - Brown / dark yellow
- * ANSI_BLUE - Blue
- * ANSI_MAGENTA - Magenta / purple
- * ANSI_CYAN - Cyan
- * ANSI_GREY - Grey / dark white
- * ANSI_DARKGREY - Dark grey / light black
- * ANSI_LIGHTRED - Light red
- * ANSI_LIGHTGREEN - Light green
- * ANSI_YELLOW - Yellow (bright)
- * ANSI_LIGHTBLUE - Light blue
- * ANSI_LIGHTMAGENTA - Light magenta / light purple
- * ANSI_LIGHTCYAN - Light cyan
- * ANSI_WHITE - White (bright)
+ * ANSI_CLS                     - Clears screen
+ * ANSI_BLACK                   - Black
+ * ANSI_RED                     - Red
+ * ANSI_GREEN                   - Green
+ * ANSI_BROWN                   - Brown / dark yellow
+ * ANSI_BLUE                    - Blue
+ * ANSI_MAGENTA                 - Magenta / purple
+ * ANSI_CYAN                    - Cyan
+ * ANSI_GREY                    - Grey / dark white
+ * ANSI_DARKGREY                - Dark grey / light black
+ * ANSI_LIGHTRED                - Light red
+ * ANSI_LIGHTGREEN              - Light green
+ * ANSI_YELLOW                  - Yellow (bright)
+ * ANSI_LIGHTBLUE               - Light blue
+ * ANSI_LIGHTMAGENTA            - Light magenta / light purple
+ * ANSI_LIGHTCYAN               - Light cyan
+ * ANSI_WHITE                   - White (bright)
+ * ANSI_BACKGROUND_BLACK        - Black background
+ * ANSI_BACKGROUND_RED          - Red background
+ * ANSI_BACKGROUND_GREEN        - Green background
+ * ANSI_BACKGROUND_BROWN        - Brown / dark yellow background
+ * ANSI_BACKGROUND_BLUE         - Blue background
+ * ANSI_BACKGROUND_MAGENTA      - Magenta / purple background
+ * ANSI_BACKGROUND_CYAN         - Cyan background
+ * ANSI_BACKGROUND_GREY         - Grey / dark white background
  */
-const RLUTIL_STRING_T ANSI_CLS = "\033[2J";
-const RLUTIL_STRING_T ANSI_BLACK = "\033[22;30m";
-const RLUTIL_STRING_T ANSI_RED = "\033[22;31m";
-const RLUTIL_STRING_T ANSI_GREEN = "\033[22;32m";
-const RLUTIL_STRING_T ANSI_BROWN = "\033[22;33m";
-const RLUTIL_STRING_T ANSI_BLUE = "\033[22;34m";
-const RLUTIL_STRING_T ANSI_MAGENTA = "\033[22;35m";
-const RLUTIL_STRING_T ANSI_CYAN = "\033[22;36m";
-const RLUTIL_STRING_T ANSI_GREY = "\033[22;37m";
-const RLUTIL_STRING_T ANSI_DARKGREY = "\033[01;30m";
-const RLUTIL_STRING_T ANSI_LIGHTRED = "\033[01;31m";
-const RLUTIL_STRING_T ANSI_LIGHTGREEN = "\033[01;32m";
-const RLUTIL_STRING_T ANSI_YELLOW = "\033[01;33m";
-const RLUTIL_STRING_T ANSI_LIGHTBLUE = "\033[01;34m";
-const RLUTIL_STRING_T ANSI_LIGHTMAGENTA = "\033[01;35m";
-const RLUTIL_STRING_T ANSI_LIGHTCYAN = "\033[01;36m";
-const RLUTIL_STRING_T ANSI_WHITE = "\033[01;37m";
+const RLUTIL_STRING_T ANSI_CLS                     = "\033[2J";
+const RLUTIL_STRING_T ANSI_BLACK                   = "\033[22;30m";
+const RLUTIL_STRING_T ANSI_RED                     = "\033[22;31m";
+const RLUTIL_STRING_T ANSI_GREEN                   = "\033[22;32m";
+const RLUTIL_STRING_T ANSI_BROWN                   = "\033[22;33m";
+const RLUTIL_STRING_T ANSI_BLUE                    = "\033[22;34m";
+const RLUTIL_STRING_T ANSI_MAGENTA                 = "\033[22;35m";
+const RLUTIL_STRING_T ANSI_CYAN                    = "\033[22;36m";
+const RLUTIL_STRING_T ANSI_GREY                    = "\033[22;37m";
+const RLUTIL_STRING_T ANSI_DARKGREY                = "\033[01;30m";
+const RLUTIL_STRING_T ANSI_LIGHTRED                = "\033[01;31m";
+const RLUTIL_STRING_T ANSI_LIGHTGREEN              = "\033[01;32m";
+const RLUTIL_STRING_T ANSI_YELLOW                  = "\033[01;33m";
+const RLUTIL_STRING_T ANSI_LIGHTBLUE               = "\033[01;34m";
+const RLUTIL_STRING_T ANSI_LIGHTMAGENTA            = "\033[01;35m";
+const RLUTIL_STRING_T ANSI_LIGHTCYAN               = "\033[01;36m";
+const RLUTIL_STRING_T ANSI_WHITE                   = "\033[01;37m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_BLACK        = "\033[40m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_RED          = "\033[41m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_GREEN        = "\033[42m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_BROWN        = "\033[43m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_BLUE         = "\033[44m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_MAGENTA      = "\033[45m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_CYAN         = "\033[46m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_GREY         = "\033[47m";
+// Remaining colors not supported
 
 /**
  * Enums: Key codes for keyhit()
@@ -385,36 +400,115 @@ RLUTIL_INLINE int nb_getch(void) {
 /// See <Color Codes>
 RLUTIL_INLINE RLUTIL_STRING_T getANSIColor(const int c) {
 	switch (c) {
-		case 0 : return ANSI_BLACK;
-		case 1 : return ANSI_BLUE; // non-ANSI
-		case 2 : return ANSI_GREEN;
-		case 3 : return ANSI_CYAN; // non-ANSI
-		case 4 : return ANSI_RED; // non-ANSI
-		case 5 : return ANSI_MAGENTA;
-		case 6 : return ANSI_BROWN;
-		case 7 : return ANSI_GREY;
-		case 8 : return ANSI_DARKGREY;
-		case 9 : return ANSI_LIGHTBLUE; // non-ANSI
-		case 10: return ANSI_LIGHTGREEN;
-		case 11: return ANSI_LIGHTCYAN; // non-ANSI;
-		case 12: return ANSI_LIGHTRED; // non-ANSI;
-		case 13: return ANSI_LIGHTMAGENTA;
-		case 14: return ANSI_YELLOW; // non-ANSI
-		case 15: return ANSI_WHITE;
+		case BLACK       : return ANSI_BLACK;
+		case BLUE        : return ANSI_BLUE; // non-ANSI
+		case GREEN       : return ANSI_GREEN;
+		case CYAN        : return ANSI_CYAN; // non-ANSI
+		case RED         : return ANSI_RED; // non-ANSI
+		case MAGENTA     : return ANSI_MAGENTA;
+		case BROWN       : return ANSI_BROWN;
+		case GREY        : return ANSI_GREY;
+		case DARKGREY    : return ANSI_DARKGREY;
+		case LIGHTBLUE   : return ANSI_LIGHTBLUE; // non-ANSI
+		case LIGHTGREEN  : return ANSI_LIGHTGREEN;
+		case LIGHTCYAN   : return ANSI_LIGHTCYAN; // non-ANSI;
+		case LIGHTRED    : return ANSI_LIGHTRED; // non-ANSI;
+		case LIGHTMAGENTA: return ANSI_LIGHTMAGENTA;
+		case YELLOW      : return ANSI_YELLOW; // non-ANSI
+		case WHITE       : return ANSI_WHITE;
+		default: return "";
+	}
+}
+
+/// Function: getANSIBackgroundColor
+/// Return ANSI background color escape sequence for specified number 0-15.
+///
+/// See <Color Codes>
+RLUTIL_INLINE RLUTIL_STRING_T getANSIBackgroundColor(const int c) {
+	switch (c) {
+		case BLACK  : return ANSI_BACKGROUND_BLACK;
+		case BLUE   : return ANSI_BACKGROUND_BLUE;
+		case GREEN  : return ANSI_BACKGROUND_GREEN;
+		case CYAN   : return ANSI_BACKGROUND_CYAN;
+		case RED    : return ANSI_BACKGROUND_RED;
+		case MAGENTA: return ANSI_BACKGROUND_MAGENTA;
+		case BROWN  : return ANSI_BACKGROUND_BROWN;
+		case GREY   : return ANSI_BACKGROUND_GREY;
 		default: return "";
 	}
 }
 
 /// Function: setColor
 /// Change color specified by number (Windows / QBasic colors).
+/// Don't change the background color
 ///
 /// See <Color Codes>
 RLUTIL_INLINE void setColor(int c) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, (WORD)c);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+
+	SetConsoleTextAttribute(hConsole, (csbi.wAttributes & 0xFFF0) | (WORD)c); // Foreground colors take up the least significant byte
 #else
 	RLUTIL_PRINT(getANSIColor(c));
+#endif
+}
+
+/// Function: setBackgroundColor
+/// Change background color specified by number (Windows / QBasic colors).
+/// Don't change the foreground color
+///
+/// See <Color Codes>
+RLUTIL_INLINE void setBackgroundColor(int c) {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+
+	SetConsoleTextAttribute(hConsole, (csbi.wAttributes & 0xFF0F) | (((WORD)c) << 4)); // Background colors take up the second-least significant byte
+#else
+	RLUTIL_PRINT(getANSIBackgroundColor(c));
+#endif
+}
+
+/// Function: saveDefaultColor
+/// Call once to preserve colors for use in resetColor()
+/// on Windows without ANSI, no-op otherwise
+///
+/// See <Color Codes>
+/// See <resetColor>
+RLUTIL_INLINE int saveDefaultColor() {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	static char initialized = 0; // bool
+	static WORD attributes;
+
+	if (!initialized) {
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+		attributes = csbi.wAttributes;
+		initialized = 1;
+	}
+	return attributes;
+#else
+	return -1;
+#endif
+}
+
+/// Function: resetColor
+/// Reset color to default
+/// Requires a call to saveDefaultColor() to set the defaults
+///
+/// See <Color Codes>
+/// See <setColor>
+/// See <saveDefaultColor>
+RLUTIL_INLINE void resetColor() {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), saveDefaultColor());
+#else
+	RLUTIL_PRINT("\033[0m");
 #endif
 }
 
@@ -451,9 +545,7 @@ RLUTIL_INLINE void locate(int x, int y) {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
-		std::ostringstream oss;
-		oss << "\033[" << y << ";" << x << "H";
-		RLUTIL_PRINT(oss.str());
+		RLUTIL_PRINT("\033[" << y << ";" << x << "H");
 	#else // __cplusplus
 		char buf[32];
 		sprintf(buf, "\033[%d;%df", y, x);
@@ -571,7 +663,7 @@ template <class T> void anykey(const T& msg) {
 	RLUTIL_PRINT(msg);
 #else
 RLUTIL_INLINE void anykey(const char* msg) { // cannot use `const RLUTIL_STRING_T` here, because it yields char * const
-	if(msg)
+	if (msg)
 		RLUTIL_PRINT(msg);
 #endif // __cplusplus
 	getch();
