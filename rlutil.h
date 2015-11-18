@@ -418,6 +418,45 @@ RLUTIL_INLINE void setColor(int c) {
 #endif
 }
 
+/// Function: saveDefaultColor
+/// Call once to preserve colors for use in resetColor()
+/// on Windows without ANSI, no-op otherwise
+///
+/// See <Color Codes>
+/// See <resetColor>
+RLUTIL_INLINE int saveDefaultColor() {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	static char initialized = 0; // bool
+	static WORD attributes;
+
+	if(!initialized) {
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+
+		attributes = csbi.wAttributes;
+		initialized = 1;
+	}
+	return attributes;
+#else
+	return -1;
+#endif
+}
+
+/// Function: resetColor
+/// Reset color to default
+/// Requires a call to saveDefaultColor() to set the defaults
+///
+/// See <Color Codes>
+/// See <setColor>
+/// See <saveDefaultColor>
+RLUTIL_INLINE void resetColor() {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	setColor(saveDefaultColor());
+#else
+	RLUTIL_PRINT("\033[39;49m");
+#endif
+}
+
 /// Function: cls
 /// Clears screen and moves cursor home.
 RLUTIL_INLINE void cls(void) {
