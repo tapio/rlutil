@@ -32,7 +32,7 @@ int main() {
 	}
 	rlutil::resetColor();
 	std::cout << "\n"
-	             "You should see numbers 0-15 in different-colored backgrounds.\n";
+	             "You should see numbers 0-7 in different-colored backgrounds.\n";
 	waitkey;
 
 	std::cout << "Test 2: Colors" << std::endl;
