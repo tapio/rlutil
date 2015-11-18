@@ -34,6 +34,7 @@ void gen(int seed) {
 	x = randcoord;
 	y = randcoord;
 	lvl[randcoord][randcoord] = STAIRS_DOWN;
+	#undef randcoord
 }
 
 /// Draws the screen
@@ -102,5 +103,3 @@ int main() {
 	showcursor();
 	return 0;
 }
-
-
