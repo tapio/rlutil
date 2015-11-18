@@ -74,7 +74,7 @@ int main() {
 			std::cout << "You should be able to move the '@' character with WASD keys." << std::endl;
 			std::cout << "Hit Space to continue to the next test." << std::endl;
 			std::cout << "Turn count: " << cnt << std::endl;
-			rlutil::locate(x,y); std::cout << "@"; // Output player
+			rlutil::locate(x,y); std::cout << '@'; // Output player
 			char k = getch(); // Get character
 			if (k == 'a') --x;
 			else if (k == 'd') ++x;
@@ -93,7 +93,7 @@ int main() {
 		std::cout << "You should be able to move the '@' character with WASD keys." << std::endl;
 		std::cout << "Hit Space to continue to the next test." << std::endl;
 		std::cout << "Turn count: " << cnt << std::endl;
-		rlutil::locate(x,y); std::cout << "@" << std::endl; // Output player
+		rlutil::locate(x,y); std::cout << '@' << std::endl; // Output player
 		while (true) {
 			rlutil::locate(1,4); std::cout << "Turn count: " << cnt;
 			if (kbhit()) {
@@ -104,10 +104,10 @@ int main() {
 				else if (k == 'w') --y;
 				else if (k == 's') ++y;
 				else if (k == ' ') break;
-				rlutil::locate(x,y); std::cout << "@"; // Output player
+				rlutil::locate(x,y); std::cout << '@'; // Output player
 			}
 			cnt++;
-			fflush(stdout);
+			std::cout.flush();
 		}
 		rlutil::showcursor();
 	}
@@ -119,7 +119,7 @@ int main() {
 		std::cout << "Test 9: Arrow keys" << std::endl;
 		std::cout << "You should be able to move the '@' character with arrow keys." << std::endl;
 		std::cout << "Hit Escape to continue to the next test." << std::endl;
-		gotoxy(x,y); std::cout << "@" << std::endl; // Output player
+		gotoxy(x,y); std::cout << '@' << std::endl; // Output player
 		while (true) {
 			if (kbhit()) {
 				int k = rlutil::getkey(); // Get character
@@ -129,8 +129,8 @@ int main() {
 				else if (k == rlutil::KEY_UP) --y;
 				else if (k == rlutil::KEY_DOWN) ++y;
 				else if (k == rlutil::KEY_ESCAPE) break;
-				gotoxy(x,y); std::cout << "@"; // Output player
-				fflush(stdout);
+				gotoxy(x,y); std::cout << '@'; // Output player
+				std::cout.flush();
 			}
 		}
 	}
