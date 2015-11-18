@@ -18,6 +18,8 @@
 #define waitkey rlutil::anykey("Press any key to continue...\n")
 
 int main() {
+	rlutil::saveDefaultColor();
+
 	std::cout << "Welcome to rlutil test program." << std::endl;
 	waitkey;
 
@@ -26,6 +28,7 @@ int main() {
 		rlutil::setColor(i);
 		std::cout << i << " ";
 	}
+	rlutil::resetColor();
 	std::cout << std::endl << "You should see numbers 0-15 in different colors." << std::endl;
 	waitkey;
 
@@ -137,9 +140,7 @@ int main() {
 	std::cout << rlutil::trows() << " Rows" << std::endl;
 	std::cout << rlutil::tcols() << " Columns" << std::endl;
 	waitkey;
-	
+
 	std::cout << "All tests done. Bye!" << std::endl;
 	return 0;
 }
-
-
