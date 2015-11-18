@@ -139,9 +139,9 @@ int main() {
 	std::cout << "Test 10: Delay" << std::endl;
 	std::cout << "Next numbers should appear rapidly after each other (but not instantly)." << std::endl;
 	rlutil::msleep(500);
-	for (float t = 0; t <= 4; t += 0.33333333f) {
+	for (float t = 0; t <= 2; t += 0.25f) {
 		std::cout << t << "s" << std::endl;
-		rlutil::msleep(333);
+		rlutil::msleep(250);
 	}
 	waitkey;
 
