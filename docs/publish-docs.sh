@@ -10,7 +10,8 @@ git checkout gh-pages || exit 1
 echo "Merging changes from master branch..."
 git merge master || exit 1
 echo "Publishing changes..."
-git push --all || exit 1
+git push origin gh-pages || exit 1
 git checkout master
+git push origin master || exit 1
 echo "All done."
 
