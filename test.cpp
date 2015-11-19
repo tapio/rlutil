@@ -23,7 +23,7 @@ int main() {
 	std::cout << "Welcome to rlutil test program." << std::endl;
 	waitkey;
 
-	std::cout << "Test 1: Colors" << std::endl;
+	std::cout << "\nTest 1: Colors" << std::endl;
 	for (int i = 0; i < 16; i++) {
 		rlutil::setColor(i);
 		std::cout << i << " ";
@@ -32,7 +32,7 @@ int main() {
 	std::cout << std::endl << "You should see numbers 0-15 in different colors." << std::endl;
 	waitkey;
 
-	std::cout << "Test 2: Background colors\n";
+	std::cout << "\nTest 2: Background colors\n";
 	for (int i = 0; i < 8; i++) {
 		rlutil::setBackgroundColor(i);
 		std::cout << i;
@@ -40,8 +40,7 @@ int main() {
 		std::cout << ' ';
 	}
 	rlutil::resetColor();
-	std::cout << "\n"
-	             "You should see numbers 0-7 in different-colored backgrounds.\n";
+	std::cout << "\nYou should see numbers 0-7 in different-colored backgrounds.\n";
 	waitkey;
 
 	rlutil::cls();
@@ -49,12 +48,12 @@ int main() {
 	std::cout << "The colors should now be gone." << std::endl;
 	waitkey;
 
-	std::cout << "Test 4: Cursor hiding" << std::endl;
+	std::cout << "\nTest 4: Cursor hiding" << std::endl;
 	rlutil::hidecursor();
 	std::cout << "The cursor should now be invisible." << std::endl;
 	waitkey;
 
-	std::cout << "Test 5: Cursor showing" << std::endl;
+	std::cout << "\nTest 5: Cursor showing" << std::endl;
 	rlutil::showcursor();
 	std::cout << "The cursor should now be visible again." << std::endl;
 	waitkey;
@@ -67,7 +66,7 @@ int main() {
 	std::cout << std::endl << "You should see three coordinates in their specified locations." << std::endl;
 	waitkey;
 
-	// Test 6
+	// Test 7
 	{	int x = 7; int y = 7; unsigned int cnt = 0;
 		while (true) {
 			rlutil::cls();
@@ -75,7 +74,7 @@ int main() {
 			std::cout << "You should be able to move the '@' character with WASD keys." << std::endl;
 			std::cout << "Hit Space to continue to the next test." << std::endl;
 			std::cout << "Turn count: " << cnt << std::endl;
-			rlutil::locate(x,y); std::cout << "@"; // Output player
+			rlutil::locate(x,y); std::cout << '@'; // Output player
 			char k = getch(); // Get character
 			if (k == 'a') --x;
 			else if (k == 'd') ++x;
@@ -86,7 +85,7 @@ int main() {
 		}
 	}
 
-	// Test 7
+	// Test 8
 	{	int x = 7; int y = 7; unsigned int cnt = 0;
 		rlutil::hidecursor();
 		rlutil::cls();
@@ -94,7 +93,7 @@ int main() {
 		std::cout << "You should be able to move the '@' character with WASD keys." << std::endl;
 		std::cout << "Hit Space to continue to the next test." << std::endl;
 		std::cout << "Turn count: " << cnt << std::endl;
-		rlutil::locate(x,y); std::cout << "@" << std::endl; // Output player
+		rlutil::locate(x,y); std::cout << '@' << std::endl; // Output player
 		while (true) {
 			rlutil::locate(1,4); std::cout << "Turn count: " << cnt;
 			if (kbhit()) {
@@ -105,22 +104,22 @@ int main() {
 				else if (k == 'w') --y;
 				else if (k == 's') ++y;
 				else if (k == ' ') break;
-				rlutil::locate(x,y); std::cout << "@"; // Output player
+				rlutil::locate(x,y); std::cout << '@'; // Output player
 			}
 			cnt++;
-			fflush(stdout);
+			std::cout.flush();
 		}
 		rlutil::showcursor();
 	}
 
-	// Test 8
+	// Test 9
 	{	int x = 7; int y = 7;
 		rlutil::cls();
 		rlutil::CursorHider curs;
-		std::cout << "Test 8: Arrow keys" << std::endl;
+		std::cout << "Test 9: Arrow keys" << std::endl;
 		std::cout << "You should be able to move the '@' character with arrow keys." << std::endl;
 		std::cout << "Hit Escape to continue to the next test." << std::endl;
-		gotoxy(x,y); std::cout << "@" << std::endl; // Output player
+		gotoxy(x,y); std::cout << '@' << std::endl; // Output player
 		while (true) {
 			if (kbhit()) {
 				int k = rlutil::getkey(); // Get character
@@ -130,8 +129,8 @@ int main() {
 				else if (k == rlutil::KEY_UP) --y;
 				else if (k == rlutil::KEY_DOWN) ++y;
 				else if (k == rlutil::KEY_ESCAPE) break;
-				gotoxy(x,y); std::cout << "@"; // Output player
-				fflush(stdout);
+				gotoxy(x,y); std::cout << '@'; // Output player
+				std::cout.flush();
 			}
 		}
 	}
@@ -140,9 +139,9 @@ int main() {
 	std::cout << "Test 10: Delay" << std::endl;
 	std::cout << "Next numbers should appear rapidly after each other (but not instantly)." << std::endl;
 	rlutil::msleep(500);
-	for (float t = 0; t <= 4; t += 0.33333333f) {
+	for (float t = 0; t <= 2; t += 0.25f) {
 		std::cout << t << "s" << std::endl;
-		rlutil::msleep(333);
+		rlutil::msleep(250);
 	}
 	waitkey;
 
