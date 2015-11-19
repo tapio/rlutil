@@ -101,7 +101,10 @@ int main() {
 			if (--torch <= 0) break;
 		}
 	}
+	
+	cls();
 	resetColor();
 	showcursor();
+	
 	return 0;
 }
