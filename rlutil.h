@@ -440,12 +440,17 @@ RLUTIL_INLINE RLUTIL_STRING_T getANSIBackgroundColor(const int c) {
 
 /// Function: setColor
 /// Change color specified by number (Windows / QBasic colors).
+/// Don't change the background color
 ///
 /// See <Color Codes>
 RLUTIL_INLINE void setColor(int c) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, (WORD)c);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+
+	SetConsoleTextAttribute(hConsole, (csbi.wAttributes & 0xFFF0) | (WORD)c); // Foreground colors take up the least significant byte
 #else
 	RLUTIL_PRINT(getANSIColor(c));
 #endif
@@ -453,6 +458,7 @@ RLUTIL_INLINE void setColor(int c) {
 
 /// Function: setBackgroundColor
 /// Change background color specified by number (Windows / QBasic colors).
+/// Don't change the foreground color
 ///
 /// See <Color Codes>
 RLUTIL_INLINE void setBackgroundColor(int c) {
@@ -462,7 +468,7 @@ RLUTIL_INLINE void setBackgroundColor(int c) {
 
 	GetConsoleScreenBufferInfo(hConsole, &csbi);
 
-	SetConsoleTextAttribute(hConsole, (csbi.wAttributes & 0xFF0F) | (((WORD)c) << 4));
+	SetConsoleTextAttribute(hConsole, (csbi.wAttributes & 0xFF0F) | (((WORD)c) << 4)); // Background colors take up the second-least significant byte
 #else
 	RLUTIL_PRINT(getANSIBackgroundColor(c));
 #endif
