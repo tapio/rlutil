@@ -506,7 +506,7 @@ RLUTIL_INLINE int saveDefaultColor() {
 /// See <saveDefaultColor>
 RLUTIL_INLINE void resetColor() {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	setColor(saveDefaultColor());
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), saveDefaultColor());
 #else
 	RLUTIL_PRINT("\033[39;49m");
 #endif
