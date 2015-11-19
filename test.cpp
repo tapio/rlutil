@@ -23,6 +23,18 @@ int main() {
 	std::cout << "Welcome to rlutil test program." << std::endl;
 	waitkey;
 
+	std::cout << "Test 0: Background colors\n";
+	for (int i = 0; i < 16; i++) {
+		rlutil::setBackgroundColor(i);
+		std::cout << i;
+		rlutil::setBackgroundColor(0);
+		std::cout << ' ';
+	}
+	rlutil::resetColor();
+	std::cout << "\n"
+	             "You should see numbers 0-15 in different-colored backgrounds.\n";
+	waitkey;
+
 	std::cout << "Test 1: Colors" << std::endl;
 	for (int i = 0; i < 16; i++) {
 		rlutil::setColor(i);

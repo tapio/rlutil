@@ -383,22 +383,22 @@ RLUTIL_INLINE int nb_getch(void) {
 /// See <Color Codes>
 RLUTIL_INLINE RLUTIL_STRING_T getANSIColor(const int c) {
 	switch (c) {
-		case 0 : return ANSI_BLACK;
-		case 1 : return ANSI_BLUE; // non-ANSI
-		case 2 : return ANSI_GREEN;
-		case 3 : return ANSI_CYAN; // non-ANSI
-		case 4 : return ANSI_RED; // non-ANSI
-		case 5 : return ANSI_MAGENTA;
-		case 6 : return ANSI_BROWN;
-		case 7 : return ANSI_GREY;
-		case 8 : return ANSI_DARKGREY;
-		case 9 : return ANSI_LIGHTBLUE; // non-ANSI
-		case 10: return ANSI_LIGHTGREEN;
-		case 11: return ANSI_LIGHTCYAN; // non-ANSI;
-		case 12: return ANSI_LIGHTRED; // non-ANSI;
-		case 13: return ANSI_LIGHTMAGENTA;
-		case 14: return ANSI_YELLOW; // non-ANSI
-		case 15: return ANSI_WHITE;
+		case BLACK       : return ANSI_BLACK;
+		case BLUE        : return ANSI_BLUE; // non-ANSI
+		case GREEN       : return ANSI_GREEN;
+		case CYAN        : return ANSI_CYAN; // non-ANSI
+		case RED         : return ANSI_RED; // non-ANSI
+		case MAGENTA     : return ANSI_MAGENTA;
+		case BROWN       : return ANSI_BROWN;
+		case GREY        : return ANSI_GREY;
+		case DARKGREY    : return ANSI_DARKGREY;
+		case LIGHTBLUE   : return ANSI_LIGHTBLUE; // non-ANSI
+		case LIGHTGREEN  : return ANSI_LIGHTGREEN;
+		case LIGHTCYAN   : return ANSI_LIGHTCYAN; // non-ANSI;
+		case LIGHTRED    : return ANSI_LIGHTRED; // non-ANSI;
+		case LIGHTMAGENTA: return ANSI_LIGHTMAGENTA;
+		case YELLOW      : return ANSI_YELLOW; // non-ANSI
+		case WHITE       : return ANSI_WHITE;
 		default: return "";
 	}
 }
@@ -411,6 +411,23 @@ RLUTIL_INLINE void setColor(int c) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, (WORD)c);
+#else
+	RLUTIL_PRINT(getANSIColor(c));
+#endif
+}
+
+/// Function: setBackgroundColor
+/// Change background color specified by number (Windows / QBasic colors).
+///
+/// See <Color Codes>
+RLUTIL_INLINE void setBackgroundColor(int c) {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+
+	SetConsoleTextAttribute(hConsole, (csbi.wAttributes & 0xFF0F) | (((WORD)c) << 4));
 #else
 	RLUTIL_PRINT(getANSIColor(c));
 #endif
