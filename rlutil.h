@@ -210,7 +210,7 @@ enum {
  * ANSI_BACKGROUND_BLACK   - Black background
  * ANSI_BACKGROUND_RED     - Red background
  * ANSI_BACKGROUND_GREEN   - Green background
- * ANSI_BACKGROUND_BROWN   - Brown (a.k.a. yellow) background
+ * ANSI_BACKGROUND_YELLOW  - Yellow background
  * ANSI_BACKGROUND_BLUE    - Blue background
  * ANSI_BACKGROUND_MAGENTA - Magenta / purple background
  * ANSI_BACKGROUND_CYAN    - Cyan background
@@ -239,7 +239,7 @@ const RLUTIL_STRING_T ANSI_WHITE              = "\033[01;37m";
 const RLUTIL_STRING_T ANSI_BACKGROUND_BLACK   = "\033[40m";
 const RLUTIL_STRING_T ANSI_BACKGROUND_RED     = "\033[41m";
 const RLUTIL_STRING_T ANSI_BACKGROUND_GREEN   = "\033[42m";
-const RLUTIL_STRING_T ANSI_BACKGROUND_BROWN   = "\033[43m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_YELLOW  = "\033[43m";
 const RLUTIL_STRING_T ANSI_BACKGROUND_BLUE    = "\033[44m";
 const RLUTIL_STRING_T ANSI_BACKGROUND_MAGENTA = "\033[45m";
 const RLUTIL_STRING_T ANSI_BACKGROUND_CYAN    = "\033[46m";
@@ -438,7 +438,7 @@ RLUTIL_INLINE RLUTIL_STRING_T getANSIBackgroundColor(const int c) {
 		case CYAN   : return ANSI_BACKGROUND_CYAN;
 		case RED    : return ANSI_BACKGROUND_RED;
 		case MAGENTA: return ANSI_BACKGROUND_MAGENTA;
-		case BROWN  : return ANSI_BACKGROUND_BROWN;
+		case BROWN  : return ANSI_BACKGROUND_YELLOW;
 		case GREY   : return ANSI_BACKGROUND_WHITE;
 		default: return "";
 	}
