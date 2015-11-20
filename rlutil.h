@@ -210,11 +210,11 @@ enum {
  * ANSI_BACKGROUND_BLACK   - Black background
  * ANSI_BACKGROUND_RED     - Red background
  * ANSI_BACKGROUND_GREEN   - Green background
- * ANSI_BACKGROUND_BROWN   - Brown / dark yellow background
+ * ANSI_BACKGROUND_BROWN   - Brown (a.k.a. yellow) background
  * ANSI_BACKGROUND_BLUE    - Blue background
  * ANSI_BACKGROUND_MAGENTA - Magenta / purple background
  * ANSI_BACKGROUND_CYAN    - Cyan background
- * ANSI_BACKGROUND_GREY    - Grey / dark white background
+ * ANSI_BACKGROUND_WHITE   - White background
  */
 const RLUTIL_STRING_T ANSI_CLS                = "\033[2J";
 const RLUTIL_STRING_T ANSI_ATTRIBUTE_RESET    = "\033[0m";
@@ -243,7 +243,7 @@ const RLUTIL_STRING_T ANSI_BACKGROUND_BROWN   = "\033[43m";
 const RLUTIL_STRING_T ANSI_BACKGROUND_BLUE    = "\033[44m";
 const RLUTIL_STRING_T ANSI_BACKGROUND_MAGENTA = "\033[45m";
 const RLUTIL_STRING_T ANSI_BACKGROUND_CYAN    = "\033[46m";
-const RLUTIL_STRING_T ANSI_BACKGROUND_GREY    = "\033[47m";
+const RLUTIL_STRING_T ANSI_BACKGROUND_WHITE   = "\033[47m";
 // Remaining colors not supported as background colors
 
 /**
@@ -439,7 +439,7 @@ RLUTIL_INLINE RLUTIL_STRING_T getANSIBackgroundColor(const int c) {
 		case RED    : return ANSI_BACKGROUND_RED;
 		case MAGENTA: return ANSI_BACKGROUND_MAGENTA;
 		case BROWN  : return ANSI_BACKGROUND_BROWN;
-		case GREY   : return ANSI_BACKGROUND_GREY;
+		case GREY   : return ANSI_BACKGROUND_WHITE;
 		default: return "";
 	}
 }
