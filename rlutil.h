@@ -191,6 +191,7 @@ enum {
  * ANSI_ATTRIBUTE_RESET    - Resets all attributes
  * ANSI_CURSOR_HIDE        - Hides the cursor
  * ANSI_CURSOR_SHOW        - Shows the cursor
+ * ANSI_CURSOR_HOME        - Moves the cursor home (0,0)
  * ANSI_BLACK              - Black
  * ANSI_RED                - Red
  * ANSI_GREEN              - Green
@@ -216,10 +217,11 @@ enum {
  * ANSI_BACKGROUND_CYAN    - Cyan background
  * ANSI_BACKGROUND_WHITE   - White background
  */
-const RLUTIL_STRING_T ANSI_CLS                = "\033[2J";
+const RLUTIL_STRING_T ANSI_CLS                = "\033[2J\033[3J";
 const RLUTIL_STRING_T ANSI_ATTRIBUTE_RESET    = "\033[0m";
 const RLUTIL_STRING_T ANSI_CURSOR_HIDE        = "\033[?25l";
 const RLUTIL_STRING_T ANSI_CURSOR_SHOW        = "\033[?25h";
+const RLUTIL_STRING_T ANSI_CURSOR_HOME        = "\033[H";
 const RLUTIL_STRING_T ANSI_BLACK              = "\033[22;30m";
 const RLUTIL_STRING_T ANSI_RED                = "\033[22;31m";
 const RLUTIL_STRING_T ANSI_GREEN              = "\033[22;32m";
@@ -538,7 +540,7 @@ RLUTIL_INLINE void cls(void) {
 	SetConsoleCursorPosition(hConsole, coordScreen);
 #else
 	RLUTIL_PRINT(ANSI_CLS);
-	RLUTIL_PRINT(ANSI_ATTRIBUTE_RESET);
+	RLUTIL_PRINT(ANSI_CURSOR_HOME);
 #endif
 }
 
