@@ -549,8 +549,9 @@ RLUTIL_INLINE void cls(void) {
 RLUTIL_INLINE void locate(int x, int y) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	COORD coord;
-	coord.X = (SHORT)x-1;
-	coord.Y = (SHORT)y-1; // Windows uses 0-based coordinates
+	// TODO: clamping/assert for x/y <= 0?
+	coord.X = x - 1;
+	coord.Y = y - 1; // Windows uses 0-based coordinates
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
@@ -563,13 +564,28 @@ RLUTIL_INLINE void locate(int x, int y) {
 #endif // _WIN32 || USE_ANSI
 }
 
+/// Function: setChar
+/// Sets the character at the cursor without advancing the cursor
+RLUTIL_INLINE void setChar(char ch) {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD numberOfCharsWritten;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
+	WriteConsoleOutputCharacter(hConsoleOutput, &ch, 1, csbi.dwCursorPosition, &numberOfCharsWritten);
+#else // _WIN32 || USE_ANSI
+	const char buf[] = {ch, '\033', '[', '1', 'D', 0};
+	RLUTIL_PRINT(buf);
+#endif // _WIN32 || USE_ANSI
+}
+
 /// Function: hidecursor
 /// Hides the cursor.
 RLUTIL_INLINE void hidecursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	HANDLE hConsoleOutput;
+	HANDLE hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	CONSOLE_CURSOR_INFO structCursorInfo;
-	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
 	structCursorInfo.bVisible = FALSE;
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
@@ -582,9 +598,8 @@ RLUTIL_INLINE void hidecursor(void) {
 /// Shows the cursor.
 RLUTIL_INLINE void showcursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	HANDLE hConsoleOutput;
+	HANDLE hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	CONSOLE_CURSOR_INFO structCursorInfo;
-	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
 	structCursorInfo.bVisible = TRUE;
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );

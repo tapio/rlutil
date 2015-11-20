@@ -9,9 +9,9 @@ test: rlutil.h test.cpp
 
 example-c: rlutil.h example.c
 	$(CC) $(CFLAGS) -o example-c example.c
-	
+
 .PHONY: clean
 
 clean:
 	rm -f test example-c
-
+	rm -rf *.dSYM

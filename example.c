@@ -75,21 +75,21 @@ int main() {
 	saveDefaultColor();
 	gen(level);
 	setColor(2);
-	printf("Welcome! Use WASD to move.\n");
+	printf("Welcome! Use WASD to move, ESC to quit.\n");
 	setColor(6);
 	anykey("Hit any key to start.\n");
 	draw();
 	while (1) {
 		// Input
 		if (kbhit()) {
-			char k = getch();
+			char k = getkey();
 
 			int oldx = x, oldy = y;
 			if (k == 'a') { --x; ++moves; }
 			else if (k == 'd') { ++x; ++moves; }
 			else if (k == 'w') { --y; ++moves; }
 			else if (k == 's') { ++y; ++moves; }
-			else if (k == 27) break;
+			else if (k == KEY_ESCAPE) break;
 			// Collisions
 			if (lvl[x][y] & WALL) { x = oldx; y = oldy; }
 			else if (lvl[x][y] & COIN) { coins++; lvl[x][y] ^= COIN; }
