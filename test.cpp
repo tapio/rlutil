@@ -152,6 +152,19 @@ int main() {
 	std::cout << rlutil::tcols() << " Columns" << std::endl;
 	waitkey;
 
+	rlutil::cls();
+	std::cout << "Test 12: Non-advancing character setting" << std::endl;
+	std::cout << "Next ASCII characters should appear rapidly after each other in the same position." << std::endl;
+	{
+		rlutil::CursorHider hider;
+		for(char c = '!'; c <= '~'; ++c) {
+			rlutil::setChar(c);
+			std::cout.flush();
+			rlutil::msleep(75);
+		}
+	}
+	waitkey;
+
 	std::cout << "All tests done. Bye!" << std::endl;
 	return 0;
 }
