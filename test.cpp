@@ -159,6 +159,7 @@ int main() {
 		rlutil::CursorHider hider;
 		for(char c = '!'; c <= '~'; ++c) {
 			rlutil::setChar(c);
+			std::cout.flush();
 			rlutil::msleep(100);
 		}
 	}

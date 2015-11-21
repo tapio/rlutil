@@ -574,9 +574,8 @@ RLUTIL_INLINE void setChar(char ch) {
 	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
 	WriteConsoleOutputCharacter(hConsoleOutput, &ch, 1, csbi.dwCursorPosition, &numberOfCharsWritten);
 #else // _WIN32 || USE_ANSI
-	char buf[] = {ch, 0};
+	char buf[] = {ch, '\033', '[', '1', 'D', 0};
 	RLUTIL_PRINT(buf);
-	RLUTIL_PRINT("\033[1D");
 #endif // _WIN32 || USE_ANSI
 }
 
