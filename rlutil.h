@@ -563,13 +563,29 @@ RLUTIL_INLINE void locate(int x, int y) {
 #endif // _WIN32 || USE_ANSI
 }
 
+/// Function: setChar
+/// Sets the character at the cursor without advancing the cursor
+RLUTIL_INLINE void setChar(char ch) {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD numberOfCharsWritten;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
+	WriteConsoleOutputCharacter(hConsoleOutput, &ch, 1, csbi.dwCursorPosition, &numberOfCharsWritten);
+#else // _WIN32 || USE_ANSI
+	char buf[] = {ch, 0};
+	RLUTIL_PRINT(buf);
+	RLUTIL_PRINT("\033[1D");
+#endif // _WIN32 || USE_ANSI
+}
+
 /// Function: hidecursor
 /// Hides the cursor.
 RLUTIL_INLINE void hidecursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	HANDLE hConsoleOutput;
+	HANDLE hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	CONSOLE_CURSOR_INFO structCursorInfo;
-	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
 	structCursorInfo.bVisible = FALSE;
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
@@ -582,9 +598,8 @@ RLUTIL_INLINE void hidecursor(void) {
 /// Shows the cursor.
 RLUTIL_INLINE void showcursor(void) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	HANDLE hConsoleOutput;
+	HANDLE hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	CONSOLE_CURSOR_INFO structCursorInfo;
-	hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
 	structCursorInfo.bVisible = TRUE;
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
