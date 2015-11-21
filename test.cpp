@@ -20,11 +20,9 @@
 
 #define waitkey rlutil::anykey("Press any key to continue...\n")
 
-struct chargen_t {
-	char operator()() const {
-		return rand() % (('~' - '!') + 1) + '!'; // I am really sorry for this
-	}
-} const chargen;
+char chargen() {
+	return rand() % (('~' - '!') + 1) + '!'; // I am really sorry for this
+}
 
 int main() {
 	rlutil::saveDefaultColor();
