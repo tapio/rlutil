@@ -49,6 +49,7 @@
 	}
 #else
 	#include <stdio.h> // for getch() / printf()
+	#include <string.h> // for strlen()
 	RLUTIL_INLINE void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
@@ -564,20 +565,40 @@ RLUTIL_INLINE void locate(int x, int y) {
 #endif // _WIN32 || USE_ANSI
 }
 
-/// Function: setChar
-/// Sets the character at the cursor without advancing the cursor
-RLUTIL_INLINE void setChar(char ch) {
+/// Function: setString
+/// Prints the supplied string without advancing the cursor
+#ifdef __cplusplus
+RLUTIL_INLINE void setString(const RLUTIL_STRING_T & str_) {
+	const char * const str = str_.data();
+	unsigned int len = str_.size();
+#else // __cplusplus
+RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
+	unsigned int len = strlen(str);
+#endif // __cplusplus
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 	DWORD numberOfCharsWritten;
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
 	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
-	WriteConsoleOutputCharacter(hConsoleOutput, &ch, 1, csbi.dwCursorPosition, &numberOfCharsWritten);
+	WriteConsoleOutputCharacter(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
 #else // _WIN32 || USE_ANSI
-	const char buf[] = {ch, '\033', '[', '1', 'D', 0};
-	RLUTIL_PRINT(buf);
+	RLUTIL_PRINT(str);
+	#ifdef __cplusplus
+		RLUTIL_PRINT("\033[" << len << 'D');
+	#else // __cplusplus
+		char buf[3 + 20 + 1]; // 20 = max length of 64-bit unsigned int when printed as dec
+		sprintf(buf, "\033[%uD", len);
+		RLUTIL_PRINT(buf);
+	#endif // __cplusplus
 #endif // _WIN32 || USE_ANSI
+}
+
+/// Function: setChar
+/// Sets the character at the cursor without advancing the cursor
+RLUTIL_INLINE void setChar(char ch) {
+	const char buf[] = {ch, 0};
+	setString(buf);
 }
 
 /// Function: setCursorVisibility
