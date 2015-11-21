@@ -160,7 +160,7 @@ int main() {
 		for(char c = '!'; c <= '~'; ++c) {
 			rlutil::setChar(c);
 			std::cout.flush();
-			rlutil::msleep(100);
+			rlutil::msleep(75);
 		}
 	}
 	waitkey;

@@ -549,8 +549,9 @@ RLUTIL_INLINE void cls(void) {
 RLUTIL_INLINE void locate(int x, int y) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	COORD coord;
-	coord.X = (SHORT)x-1;
-	coord.Y = (SHORT)y-1; // Windows uses 0-based coordinates
+	// TODO: clamping/assert for x/y <= 0?
+	coord.X = x - 1;
+	coord.Y = y - 1; // Windows uses 0-based coordinates
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
@@ -574,7 +575,7 @@ RLUTIL_INLINE void setChar(char ch) {
 	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
 	WriteConsoleOutputCharacter(hConsoleOutput, &ch, 1, csbi.dwCursorPosition, &numberOfCharsWritten);
 #else // _WIN32 || USE_ANSI
-	char buf[] = {ch, '\033', '[', '1', 'D', 0};
+	const char buf[] = {ch, '\033', '[', '1', 'D', 0};
 	RLUTIL_PRINT(buf);
 #endif // _WIN32 || USE_ANSI
 }
