@@ -693,26 +693,6 @@ RLUTIL_INLINE void anykey(const char* msg) { // cannot use `const RLUTIL_STRING_
 	getch();
 }
 
-#ifndef min
-/// Function: min
-/// Returns the lesser of the two arguments.
-#ifdef __cplusplus
-template <class T> const T& min ( const T& a, const T& b ) { return (a<b)?a:b; }
-#else
-#define min(a,b) (((a)<(b))?(a):(b))
-#endif // __cplusplus
-#endif // min
-
-#ifndef max
-/// Function: max
-/// Returns the greater of the two arguments.
-#ifdef __cplusplus
-template <class T> const T& max ( const T& a, const T& b ) { return (b<a)?a:b; }
-#else
-#define max(a,b) (((b)<(a))?(a):(b))
-#endif // __cplusplus
-#endif // max
-
 // Classes are here at the end so that documentation is pretty.
 
 #ifdef __cplusplus
