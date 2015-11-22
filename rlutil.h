@@ -139,7 +139,7 @@ namespace rlutil {
 	#define RLUTIL_PRINT(st) do { std::cout << st; } while(false)
 #else // __cplusplus
 	#ifndef RLUTIL_STRING_T
-		typedef char* RLUTIL_STRING_T;
+		typedef const char* RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
 
 	#define RLUTIL_PRINT(st) printf("%s", st)
@@ -684,7 +684,7 @@ RLUTIL_INLINE void anykey() {
 template <class T> void anykey(const T& msg) {
 	RLUTIL_PRINT(msg);
 #else
-RLUTIL_INLINE void anykey(const char* msg) { // cannot use `const RLUTIL_STRING_T` here, because it yields char * const
+RLUTIL_INLINE void anykey(RLUTIL_STRING_T msg) {
 	if (msg)
 		RLUTIL_PRINT(msg);
 #endif // __cplusplus
