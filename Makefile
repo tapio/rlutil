@@ -1,6 +1,4 @@
-CC=gcc
-CXX=g++
-CFLAGS=-I. -g -O2 -Wall -Wextra
+CFLAGS=-g -O2 -Wall -Wextra
 
 all: test example-c
 
