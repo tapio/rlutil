@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "math.h"
 
+#define min(a,b) (((a)<(b))?(a):(b))
+
 /// Tiles
 #define FLOOR 0
 #define WALL 1
@@ -101,10 +103,10 @@ int main() {
 			if (--torch <= 0) break;
 		}
 	}
-	
+
 	cls();
 	resetColor();
 	showcursor();
-	
+
 	return 0;
 }

@@ -49,6 +49,7 @@
 	}
 #else
 	#include <stdio.h> // for getch() / printf()
+	#include <string.h> // for strlen()
 	RLUTIL_INLINE void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
 
@@ -139,7 +140,7 @@ namespace rlutil {
 	#define RLUTIL_PRINT(st) do { std::cout << st; } while(false)
 #else // __cplusplus
 	#ifndef RLUTIL_STRING_T
-		typedef char* RLUTIL_STRING_T;
+		typedef const char* RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
 
 	#define RLUTIL_PRINT(st) printf("%s", st)
@@ -564,48 +565,66 @@ RLUTIL_INLINE void locate(int x, int y) {
 #endif // _WIN32 || USE_ANSI
 }
 
-/// Function: setChar
-/// Sets the character at the cursor without advancing the cursor
-RLUTIL_INLINE void setChar(char ch) {
+/// Function: setString
+/// Prints the supplied string without advancing the cursor
+#ifdef __cplusplus
+RLUTIL_INLINE void setString(const RLUTIL_STRING_T & str_) {
+	const char * const str = str_.data();
+	unsigned int len = str_.size();
+#else // __cplusplus
+RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
+	unsigned int len = strlen(str);
+#endif // __cplusplus
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 	DWORD numberOfCharsWritten;
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
 	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
-	WriteConsoleOutputCharacter(hConsoleOutput, &ch, 1, csbi.dwCursorPosition, &numberOfCharsWritten);
+	WriteConsoleOutputCharacter(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
 #else // _WIN32 || USE_ANSI
-	const char buf[] = {ch, '\033', '[', '1', 'D', 0};
-	RLUTIL_PRINT(buf);
+	RLUTIL_PRINT(str);
+	#ifdef __cplusplus
+		RLUTIL_PRINT("\033[" << len << 'D');
+	#else // __cplusplus
+		char buf[3 + 20 + 1]; // 20 = max length of 64-bit unsigned int when printed as dec
+		sprintf(buf, "\033[%uD", len);
+		RLUTIL_PRINT(buf);
+	#endif // __cplusplus
+#endif // _WIN32 || USE_ANSI
+}
+
+/// Function: setChar
+/// Sets the character at the cursor without advancing the cursor
+RLUTIL_INLINE void setChar(char ch) {
+	const char buf[] = {ch, 0};
+	setString(buf);
+}
+
+/// Function: setCursorVisibility
+/// Shows/hides the cursor.
+RLUTIL_INLINE void setCursorVisibility(char visible) {
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
+	CONSOLE_CURSOR_INFO structCursorInfo;
+	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
+	structCursorInfo.bVisible = (visible ? TRUE : FALSE);
+	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
+#else // _WIN32 || USE_ANSI
+	RLUTIL_PRINT((visible ? ANSI_CURSOR_SHOW : ANSI_CURSOR_HIDE));
 #endif // _WIN32 || USE_ANSI
 }
 
 /// Function: hidecursor
 /// Hides the cursor.
 RLUTIL_INLINE void hidecursor(void) {
-#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	HANDLE hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
-	CONSOLE_CURSOR_INFO structCursorInfo;
-	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
-	structCursorInfo.bVisible = FALSE;
-	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
-#else // _WIN32 || USE_ANSI
-	RLUTIL_PRINT(ANSI_CURSOR_HIDE);
-#endif // _WIN32 || USE_ANSI
+	setCursorVisibility(0);
 }
 
 /// Function: showcursor
 /// Shows the cursor.
 RLUTIL_INLINE void showcursor(void) {
-#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	HANDLE hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
-	CONSOLE_CURSOR_INFO structCursorInfo;
-	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
-	structCursorInfo.bVisible = TRUE;
-	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
-#else // _WIN32 || USE_ANSI
-	RLUTIL_PRINT(ANSI_CURSOR_SHOW);
-#endif // _WIN32 || USE_ANSI
+	setCursorVisibility(1);
 }
 
 /// Function: msleep
@@ -686,32 +705,12 @@ RLUTIL_INLINE void anykey() {
 template <class T> void anykey(const T& msg) {
 	RLUTIL_PRINT(msg);
 #else
-RLUTIL_INLINE void anykey(const char* msg) { // cannot use `const RLUTIL_STRING_T` here, because it yields char * const
+RLUTIL_INLINE void anykey(RLUTIL_STRING_T msg) {
 	if (msg)
 		RLUTIL_PRINT(msg);
 #endif // __cplusplus
 	getch();
 }
-
-#ifndef min
-/// Function: min
-/// Returns the lesser of the two arguments.
-#ifdef __cplusplus
-template <class T> const T& min ( const T& a, const T& b ) { return (a<b)?a:b; }
-#else
-#define min(a,b) (((a)<(b))?(a):(b))
-#endif // __cplusplus
-#endif // min
-
-#ifndef max
-/// Function: max
-/// Returns the greater of the two arguments.
-#ifdef __cplusplus
-template <class T> const T& max ( const T& a, const T& b ) { return (b<a)?a:b; }
-#else
-#define max(a,b) (((b)<(a))?(a):(b))
-#endif // __cplusplus
-#endif // max
 
 // Classes are here at the end so that documentation is pretty.
 

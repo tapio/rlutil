@@ -13,9 +13,16 @@
  */
 
 #include "rlutil.h"
+#include <algorithm>
+#include <cstdlib>
 #include <cstdio>
+#include <ctime>
 
 #define waitkey rlutil::anykey("Press any key to continue...\n")
+
+char chargen() {
+	return rand() % (('~' - '!') + 1) + '!'; // I am really sorry for this
+}
 
 int main() {
 	rlutil::saveDefaultColor();
@@ -163,6 +170,24 @@ int main() {
 			rlutil::msleep(75);
 		}
 	}
+	waitkey;
+
+	std::srand(std::time(0));
+	rlutil::cls();
+	std::cout << "Test 13: Non-advancing string setting" << std::endl;
+	std::cout << "Next random character strings should appear rapidly after each other starting in the same position." << std::endl;
+	{
+		const rlutil::CursorHider hider;
+		const unsigned int maxlen = rlutil::tcols() / 2;
+		std::string buf(maxlen, '\0');
+		for(unsigned int l = 1; l < maxlen; ++l) {
+			std::generate(buf.begin(), buf.begin() + l, chargen);
+			rlutil::setString(buf.c_str());
+			std::cout.flush();
+			rlutil::msleep(75);
+		}
+	}
+	std::cout << std::endl;
 	waitkey;
 
 	std::cout << "All tests done. Bye!" << std::endl;

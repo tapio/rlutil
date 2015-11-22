@@ -1,7 +1,8 @@
 rlutil
 ======
-_Copyright (C) 2010 Tapio Vierros_
- 
+
+[![Build Status](https://travis-ci.org/tapio/rlutil.svg)](https://travis-ci.org/tapio/rlutil)
+
 _RLUTIL_ is simple utility collection to aid the creation of cross-platform
 console-mode roguelike games with C++ and C. At least that was the original idea.
 In reality, it mostly just contains functions to position and colorize text as well as
