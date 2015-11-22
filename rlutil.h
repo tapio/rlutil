@@ -565,22 +565,6 @@ RLUTIL_INLINE void locate(int x, int y) {
 #endif // _WIN32 || USE_ANSI
 }
 
-/// Function: setChar
-/// Sets the character at the cursor without advancing the cursor
-RLUTIL_INLINE void setChar(char ch) {
-#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-	DWORD numberOfCharsWritten;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
-	WriteConsoleOutputCharacter(hConsoleOutput, &ch, 1, csbi.dwCursorPosition, &numberOfCharsWritten);
-#else // _WIN32 || USE_ANSI
-	const char buf[] = {ch, '\033', '[', '1', 'D', 0};
-	RLUTIL_PRINT(buf);
-#endif // _WIN32 || USE_ANSI
-}
-
 /// Function: setString
 /// Prints the supplied string without advancing the cursor
 #ifdef __cplusplus
@@ -608,6 +592,13 @@ RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
 		RLUTIL_PRINT(buf);
 	#endif // __cplusplus
 #endif // _WIN32 || USE_ANSI
+}
+
+/// Function: setChar
+/// Sets the character at the cursor without advancing the cursor
+RLUTIL_INLINE void setChar(char ch) {
+	const char buf[] = {ch, 0};
+	setString(buf);
 }
 
 /// Function: hidecursor
