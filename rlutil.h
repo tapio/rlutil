@@ -580,32 +580,30 @@ RLUTIL_INLINE void setChar(char ch) {
 #endif // _WIN32 || USE_ANSI
 }
 
-/// Function: hidecursor
-/// Hides the cursor.
-RLUTIL_INLINE void hidecursor(void) {
+/// Function: setCursorVisibility
+/// Shows/hides the cursor.
+RLUTIL_INLINE void setCursorVisibility(char visible) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 	CONSOLE_CURSOR_INFO structCursorInfo;
 	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
-	structCursorInfo.bVisible = FALSE;
+	structCursorInfo.bVisible = (visible ? TRUE : FALSE);
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
 #else // _WIN32 || USE_ANSI
-	RLUTIL_PRINT(ANSI_CURSOR_HIDE);
+	RLUTIL_PRINT((visible ? ANSI_CURSOR_SHOW : ANSI_CURSOR_HIDE));
 #endif // _WIN32 || USE_ANSI
+}
+
+/// Function: hidecursor
+/// Hides the cursor.
+RLUTIL_INLINE void hidecursor(void) {
+	setCursorVisibility(0);
 }
 
 /// Function: showcursor
 /// Shows the cursor.
 RLUTIL_INLINE void showcursor(void) {
-#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	HANDLE hConsoleOutput = GetStdHandle( STD_OUTPUT_HANDLE );
-	CONSOLE_CURSOR_INFO structCursorInfo;
-	GetConsoleCursorInfo( hConsoleOutput, &structCursorInfo ); // Get current cursor size
-	structCursorInfo.bVisible = TRUE;
-	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
-#else // _WIN32 || USE_ANSI
-	RLUTIL_PRINT(ANSI_CURSOR_SHOW);
-#endif // _WIN32 || USE_ANSI
+	setCursorVisibility(1);
 }
 
 /// Function: msleep
