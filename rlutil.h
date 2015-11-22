@@ -580,6 +580,34 @@ RLUTIL_INLINE void setChar(char ch) {
 #endif // _WIN32 || USE_ANSI
 }
 
+/// Function: setString
+/// Prints the supplied string without advancing the cursor
+#ifdef __cplusplus
+RLUTIL_INLINE void setString(const RLUTIL_STRING_T & str_) {
+	const char * const str = str_.data();
+	std::size_t len = str_.size();
+#else // __cplusplus
+RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
+	size_t len = strlen(str);
+#endif // __cplusplus
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD numberOfCharsWritten;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
+	WriteConsoleOutputCharacter(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
+#else // _WIN32 || USE_ANSI
+	#ifdef __cplusplus
+		RLUTIL_PRINT(str_ << "\033[" << len << 'D');
+	#else // __cplusplus
+		char buf[3 + 20 + 1]; // 20 = max length of 64-bit unsigned int when printed as dec
+		sprintf(buf, "\033[%lluD", len);
+		RLUTIL_PRINT(buf);
+	#endif // __cplusplus
+#endif // _WIN32 || USE_ANSI
+}
+
 /// Function: hidecursor
 /// Hides the cursor.
 RLUTIL_INLINE void hidecursor(void) {
