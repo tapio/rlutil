@@ -500,7 +500,7 @@ RLUTIL_INLINE int saveDefaultColor() {
 		attributes = csbi.wAttributes;
 		initialized = 1;
 	}
-	return attributes;
+	return (int)attributes;
 #else
 	return -1;
 #endif
@@ -515,7 +515,7 @@ RLUTIL_INLINE int saveDefaultColor() {
 /// See <saveDefaultColor>
 RLUTIL_INLINE void resetColor() {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), saveDefaultColor());
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)saveDefaultColor());
 #else
 	RLUTIL_PRINT(ANSI_ATTRIBUTE_RESET);
 #endif
@@ -551,8 +551,8 @@ RLUTIL_INLINE void locate(int x, int y) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	COORD coord;
 	// TODO: clamping/assert for x/y <= 0?
-	coord.X = x - 1;
-	coord.Y = y - 1; // Windows uses 0-based coordinates
+	coord.X = (SHORT)(x - 1);
+	coord.Y = (SHORT)(y - 1); // Windows uses 0-based coordinates
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
