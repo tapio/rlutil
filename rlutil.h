@@ -489,8 +489,8 @@ RLUTIL_INLINE void setBackgroundColor(int c) {
 ///
 /// See <Color Codes>
 /// See <resetColor>
-RLUTIL_INLINE int saveDefaultColor() {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+RLUTIL_INLINE WORD saveDefaultColor() {
 	static char initialized = 0; // bool
 	static WORD attributes;
 
@@ -501,10 +501,8 @@ RLUTIL_INLINE int saveDefaultColor() {
 		initialized = 1;
 	}
 	return attributes;
-#else
-	return -1;
-#endif
 }
+#endif
 
 /// Function: resetColor
 /// Reset color to default
@@ -551,8 +549,8 @@ RLUTIL_INLINE void locate(int x, int y) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	COORD coord;
 	// TODO: clamping/assert for x/y <= 0?
-	coord.X = x - 1;
-	coord.Y = y - 1; // Windows uses 0-based coordinates
+	coord.X = (SHORT)(x - 1);
+	coord.Y = (SHORT)(y - 1); // Windows uses 0-based coordinates
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
