@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RLUTIL_H
 #define RLUTIL_H
 /**
