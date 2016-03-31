@@ -354,7 +354,7 @@ RLUTIL_INLINE int getkey(void) {
 				case 75: return KEY_NUMPAD4;
 				case 77: return KEY_NUMPAD6;
 				case 79: return KEY_NUMPAD1;
-				case 80: return KEY_NUMPAD4;
+				case 80: return KEY_NUMPAD2;
 				case 81: return KEY_NUMPAD3;
 				case 82: return KEY_NUMPAD0;
 				case 83: return KEY_NUMDEL;
