@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include "math.h"
 
+#ifndef min
 #define min(a,b) (((a)<(b))?(a):(b))
+#endif // min
 
 /// Tiles
 #define FLOOR 0
