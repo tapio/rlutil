@@ -189,6 +189,8 @@ enum {
  * Consts: ANSI escape strings
  *
  * ANSI_CLS                - Clears screen
+ * ANSI_CONSOLE_TITLE_PRE  - Prefix for changing the window title, print the window title in between
+ * ANSI_CONSOLE_TITLE_POST - Suffix for changing the window title, print the window title in between
  * ANSI_ATTRIBUTE_RESET    - Resets all attributes
  * ANSI_CURSOR_HIDE        - Hides the cursor
  * ANSI_CURSOR_SHOW        - Shows the cursor
@@ -219,6 +221,8 @@ enum {
  * ANSI_BACKGROUND_WHITE   - White background
  */
 const RLUTIL_STRING_T ANSI_CLS                = "\033[2J\033[3J";
+const RLUTIL_STRING_T ANSI_CONSOLE_TITLE_PRE  = "\033]0;";
+const RLUTIL_STRING_T ANSI_CONSOLE_TITLE_POST = "\007";
 const RLUTIL_STRING_T ANSI_ATTRIBUTE_RESET    = "\033[0m";
 const RLUTIL_STRING_T ANSI_CURSOR_HIDE        = "\033[?25l";
 const RLUTIL_STRING_T ANSI_CURSOR_SHOW        = "\033[?25h";
@@ -710,6 +714,22 @@ RLUTIL_INLINE void anykey(RLUTIL_STRING_T msg) {
 		RLUTIL_PRINT(msg);
 #endif // __cplusplus
 	getch();
+}
+
+void setConsoleTitle(RLUTIL_STRING_T title) {
+	const char * true_title =
+#ifdef __cplusplus
+		title.c_str();
+#else // __cplusplus
+		title;
+#endif // __cplusplus
+#if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
+	SetConsoleTitleA(true_title);
+#else
+	RLUTIL_PRINT(ANSI_CONSOLE_TITLE_PRE);
+	RLUTIL_PRINT(true_title);
+	RLUTIL_PRINT(ANSI_CONSOLE_TITLE_POST);
+#endif // defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 }
 
 // Classes are here at the end so that documentation is pretty.

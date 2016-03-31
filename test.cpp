@@ -190,6 +190,16 @@ int main() {
 	std::cout << std::endl;
 	waitkey;
 
+	rlutil::cls();
+	std::cout << "Test 14: Terminal window title" << std::endl;
+	{
+		std::string title(14, '\0');
+		std::generate(title.begin(), title.end(), chargen);
+		rlutil::setConsoleTitle(title);
+		std::cout << "Your terminal window should now be named \"" << title << "\"." << std::endl;
+	}
+	waitkey;
+
 	std::cout << "All tests done. Bye!" << std::endl;
 	return 0;
 }
