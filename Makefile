@@ -1,4 +1,4 @@
-CFLAGS=-g -O2 -Wall -Wextra
+CFLAGS=-g -O2 -Wall -Wextra -Wstrict-prototypes
 
 all: test example-c
 
