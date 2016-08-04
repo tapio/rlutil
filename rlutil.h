@@ -573,8 +573,14 @@ RLUTIL_INLINE void locate(int x, int y) {
 /// Prints the supplied string without advancing the cursor
 #ifdef __cplusplus
 RLUTIL_INLINE void setString(const RLUTIL_STRING_T & str_) {
+#ifdef _UNICODE
+	std::wstring stemp = std::wstring(str_.begin(), str_.end());
+	LPCWSTR str = stemp.c_str();
+	unsigned int len = str_.size(); 
+#else	
 	const char * const str = str_.data();
-	unsigned int len = str_.size();
+	unsigned int len = str_.size();	
+#endif
 #else // __cplusplus
 RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
 	unsigned int len = strlen(str);
