@@ -585,7 +585,11 @@ RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
 	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
+#ifdef UNICODE
+	WriteConsoleOutputCharacterA(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
+#else // UNICODE
 	WriteConsoleOutputCharacter(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
+#endif // UNICODE
 #else // _WIN32 || USE_ANSI
 	RLUTIL_PRINT(str);
 	#ifdef __cplusplus
