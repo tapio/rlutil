@@ -1,5 +1,4 @@
-/* #pragma once */
-/* ^ Not entirely portable ^ */
+#pragma once
 /**
  * File: rlutil.h
  *
