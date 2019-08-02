@@ -585,7 +585,16 @@ RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
 	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
-	WriteConsoleOutputCharacter(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
+	
+	#if defined(UNICODE) || defined(_UNICODE)
+		int size = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, str, -1, NULL, 0);
+		TCHAR* tstr = (TCHAR*)malloc(size);
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, str, -1, tstr, size);
+		WriteConsoleOutputCharacter(hConsoleOutput, tstr, len, csbi.dwCursorPosition, &numberOfCharsWritten);
+		free(tstr);
+	#else
+		WriteConsoleOutputCharacter(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
+	#endif
 #else // _WIN32 || USE_ANSI
 	RLUTIL_PRINT(str);
 	#ifdef __cplusplus
