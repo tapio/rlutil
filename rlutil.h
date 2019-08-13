@@ -392,6 +392,7 @@ RLUTIL_INLINE int getkey(void) {
 					case 'B': return KEY_DOWN;
 					case 'C': return KEY_RIGHT;
 					case 'D': return KEY_LEFT;
+					default: ;
 				}
 			} else return KEY_ESCAPE;
 		}
@@ -585,7 +586,8 @@ RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
 	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
-	WriteConsoleOutputCharacter(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
+	// Use ANSI version of this function
+	WriteConsoleOutputCharacterA(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
 #else // _WIN32 || USE_ANSI
 	RLUTIL_PRINT(str);
 	#ifdef __cplusplus
