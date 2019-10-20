@@ -4,6 +4,11 @@ docs/nd
 *.exe
 test
 example-c
+.vs
+.vscode
+msvc/*.user
+msvc/Debug
+msvc/Release
 
 # OS X Crap
 *.dSYM
