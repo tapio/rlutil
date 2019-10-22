@@ -49,6 +49,7 @@
 	}
 #else
 	#include <stdio.h> // for getch() / printf()
+
 	#include <string.h> // for strlen()
 	RLUTIL_INLINE void locate(int x, int y); // Forward declare for C to avoid warnings
 #endif // __cplusplus
@@ -61,7 +62,8 @@
 	#define kbhit _kbhit
 #else
 	#include <termios.h> // for getch() and kbhit()
-	#include <unistd.h> // for getch(), kbhit() and (u)sleep()
+	#include <unistd.h> // for getch() and kbhit()
+        #include <time.h>   // for nanosleep()
 	#include <sys/ioctl.h> // for getkey()
 	#include <sys/types.h> // for kbhit()
 	#include <sys/time.h> // for kbhit()
@@ -392,6 +394,7 @@ RLUTIL_INLINE int getkey(void) {
 					case 'B': return KEY_DOWN;
 					case 'C': return KEY_RIGHT;
 					case 'D': return KEY_LEFT;
+                                        default: return -1;
 				}
 			} else return KEY_ESCAPE;
 		}
@@ -637,9 +640,14 @@ RLUTIL_INLINE void msleep(unsigned int ms) {
 #ifdef _WIN32
 	Sleep(ms);
 #else
-	// usleep argument must be under 1 000 000
-	if (ms > 1000) sleep(ms/1000000);
-	usleep((ms % 1000000) * 1000);
+        struct timespec ts;
+
+	ts.tv_sec = ms / 1000;
+        ts.tv_nsec = (ms % 1000) * 1000000L;
+        
+	if(nanosleep(&ts, NULL) < 0) {
+                perror("sleep failed");
+        }
 #endif
 }
 
