@@ -129,7 +129,7 @@ namespace rlutil {
 /**
  * Defs: Internal typedefs and macros
  * RLUTIL_STRING_T - String type depending on which one of C or C++ is used
- * RLUTIL_PRINT(str) - Printing macro independent of C/C++
+ * RLUTIL_PRINT(fp, str) - Printing macro independent of C/C++
  */
 
 #ifdef __cplusplus
@@ -137,13 +137,19 @@ namespace rlutil {
 		typedef std::string RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
 
-	#define RLUTIL_PRINT(st) do { std::cout << st; } while(false)
+	inline auto& RLUTIL_OUTPUT_STREAM = std::cout;
+	inline auto& RLUTIL_ERROR_STREAM = std::cerr;
+
+	#define RLUTIL_PRINT(fp, st) do { fp << st; } while(false)
 #else // __cplusplus
 	#ifndef RLUTIL_STRING_T
 		typedef const char* RLUTIL_STRING_T;
 	#endif // RLUTIL_STRING_T
 
-	#define RLUTIL_PRINT(st) printf("%s", st)
+	typedef stdout RLUTIL_OUTPUT_STREAM;
+	typedef stderr RLUTIL_ERROR_STREAM;
+
+	#define RLUTIL_PRINT(fp, st) fprintf(fp, "%s", st)
 #endif // __cplusplus
 
 /**
@@ -457,7 +463,13 @@ RLUTIL_INLINE RLUTIL_STRING_T getANSIBackgroundColor(const int c) {
 /// Don't change the background color
 ///
 /// See <Color Codes>
-RLUTIL_INLINE void setColor(int c) {
+RLUTIL_INLINE void setColor(int c,
+#ifdef __cplusplus
+	std::ostream& fp = std::cout
+#else
+	FILE* fp = stdout
+#endif
+) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -466,7 +478,7 @@ RLUTIL_INLINE void setColor(int c) {
 
 	SetConsoleTextAttribute(hConsole, (csbi.wAttributes & 0xFFF0) | (WORD)c); // Foreground colors take up the least significant byte
 #else
-	RLUTIL_PRINT(getANSIColor(c));
+	RLUTIL_PRINT(fp, getANSIColor(c));
 #endif
 }
 
@@ -475,7 +487,13 @@ RLUTIL_INLINE void setColor(int c) {
 /// Don't change the foreground color
 ///
 /// See <Color Codes>
-RLUTIL_INLINE void setBackgroundColor(int c) {
+RLUTIL_INLINE void setBackgroundColor(int c,
+#ifdef __cplusplus
+	std::ostream& fp = std::cout
+#else
+	FILE* fp = stdout
+#endif
+) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -484,7 +502,7 @@ RLUTIL_INLINE void setBackgroundColor(int c) {
 
 	SetConsoleTextAttribute(hConsole, (csbi.wAttributes & 0xFF0F) | (((WORD)c) << 4)); // Background colors take up the second-least significant byte
 #else
-	RLUTIL_PRINT(getANSIBackgroundColor(c));
+	RLUTIL_PRINT(fp, getANSIBackgroundColor(c));
 #endif
 }
 
@@ -518,11 +536,17 @@ RLUTIL_INLINE int saveDefaultColor(void) {
 /// See <Color Codes>
 /// See <setColor>
 /// See <saveDefaultColor>
-RLUTIL_INLINE void resetColor(void) {
+RLUTIL_INLINE void resetColor(
+#ifdef __cplusplus
+	std::ostream& fp = std::cout
+#else
+	FILE* fp = stdout
+#endif
+) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)saveDefaultColor());
 #else
-	RLUTIL_PRINT(ANSI_ATTRIBUTE_RESET);
+	RLUTIL_PRINT(fp, ANSI_ATTRIBUTE_RESET);
 #endif
 }
 
@@ -545,8 +569,8 @@ RLUTIL_INLINE void cls(void) {
 
 	SetConsoleCursorPosition(hConsole, coordScreen);
 #else
-	RLUTIL_PRINT(ANSI_CLS);
-	RLUTIL_PRINT(ANSI_CURSOR_HOME);
+	RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, ANSI_CLS);
+	RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, ANSI_CURSOR_HOME);
 #endif
 }
 
@@ -561,11 +585,11 @@ RLUTIL_INLINE void locate(int x, int y) {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 #else // _WIN32 || USE_ANSI
 	#ifdef __cplusplus
-		RLUTIL_PRINT("\033[" << y << ";" << x << "H");
+		RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, "\033[" << y << ";" << x << "H");
 	#else // __cplusplus
 		char buf[32];
 		sprintf(buf, "\033[%d;%df", y, x);
-		RLUTIL_PRINT(buf);
+		RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, buf);
 	#endif // __cplusplus
 #endif // _WIN32 || USE_ANSI
 }
@@ -589,13 +613,13 @@ RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
 	// Use ANSI version of this function
 	WriteConsoleOutputCharacterA(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
 #else // _WIN32 || USE_ANSI
-	RLUTIL_PRINT(str);
+	RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, str);
 	#ifdef __cplusplus
-		RLUTIL_PRINT("\033[" << len << 'D');
+		RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, "\033[" << len << 'D');
 	#else // __cplusplus
 		char buf[3 + 20 + 1]; // 20 = max length of 64-bit unsigned int when printed as dec
 		sprintf(buf, "\033[%uD", len);
-		RLUTIL_PRINT(buf);
+		RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, buf);
 	#endif // __cplusplus
 #endif // _WIN32 || USE_ANSI
 }
@@ -617,7 +641,7 @@ RLUTIL_INLINE void setCursorVisibility(char visible) {
 	structCursorInfo.bVisible = (visible ? TRUE : FALSE);
 	SetConsoleCursorInfo( hConsoleOutput, &structCursorInfo );
 #else // _WIN32 || USE_ANSI
-	RLUTIL_PRINT((visible ? ANSI_CURSOR_SHOW : ANSI_CURSOR_HIDE));
+	RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, (visible ? ANSI_CURSOR_SHOW : ANSI_CURSOR_HIDE));
 #endif // _WIN32 || USE_ANSI
 }
 
@@ -709,11 +733,11 @@ RLUTIL_INLINE void anykey() {
 }
 
 template <class T> void anykey(const T& msg) {
-	RLUTIL_PRINT(msg);
+	RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, msg);
 #else
 RLUTIL_INLINE void anykey(RLUTIL_STRING_T msg) {
 	if (msg)
-		RLUTIL_PRINT(msg);
+		RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, msg);
 #endif // __cplusplus
 	getch();
 }
@@ -728,9 +752,9 @@ RLUTIL_INLINE void setConsoleTitle(RLUTIL_STRING_T title) {
 #if defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 	SetConsoleTitleA(true_title);
 #else
-	RLUTIL_PRINT(ANSI_CONSOLE_TITLE_PRE);
-	RLUTIL_PRINT(true_title);
-	RLUTIL_PRINT(ANSI_CONSOLE_TITLE_POST);
+	RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, ANSI_CONSOLE_TITLE_PRE);
+	RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, true_title);
+	RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, ANSI_CONSOLE_TITLE_POST);
 #endif // defined(_WIN32) && !defined(RLUTIL_USE_ANSI)
 }
 
