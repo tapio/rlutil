@@ -610,7 +610,6 @@ RLUTIL_INLINE void setString(RLUTIL_STRING_T str) {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
 	GetConsoleScreenBufferInfo(hConsoleOutput, &csbi);
-	// Use ANSI version of this function
 	WriteConsoleOutputCharacterA(hConsoleOutput, str, len, csbi.dwCursorPosition, &numberOfCharsWritten);
 #else // _WIN32 || USE_ANSI
 	RLUTIL_PRINT(RLUTIL_OUTPUT_STREAM, str);
